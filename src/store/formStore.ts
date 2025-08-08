@@ -12,6 +12,7 @@ interface FormState {
   setSelectedElementId: (id: string | null) => void;
   updateElement: (elementId: string, newProps: Partial<FormElement>) => void; 
   addElement: (slideIndex: number, element: FormElement) => void;
+  deleteElement: (elementId: string) => void;
 
   moveElement: (
     sourceSlideIndex: number,
@@ -20,6 +21,9 @@ interface FormState {
     destinationElementIndex: number
   ) => void;
   addElementFromToolbox: (slideIndex: number, destinationIndex: number, element: FormElement) => void;
+  
+  addSlide: () => void;
+  deleteSlide: (slideIndex: number) => void;
 }
 
 const useFormStore = create<FormState>((set) => ({
@@ -38,6 +42,22 @@ const useFormStore = create<FormState>((set) => ({
 
   setSelectedElementId: (id) => set({ selectedElementId: id }),
 
+  deleteElement: (elementId) =>
+    set(
+      produce((state: FormState) => {
+        if (state.selectedElementId === elementId) {
+          state.selectedElementId = null;
+        }
+
+        for (const slide of state.formDefinition.slides) {
+          const elementIndex = slide.elements.findIndex((el) => el.id === elementId);
+
+          if (elementIndex !== -1) {
+            slide.elements.splice(elementIndex, 1);
+          }
+        }
+      })
+    ),
   updateElement: (elementId, newProps) =>
     set(
       produce((state: FormState) => {
@@ -85,6 +105,29 @@ const useFormStore = create<FormState>((set) => ({
         const slide = state.formDefinition.slides[slideIndex];
         if (slide) {
           slide.elements.splice(destinationIndex, 0, element);
+        }
+      })
+    ),
+
+
+
+    
+  addSlide: () =>
+    set(
+      produce((state: FormState) => {
+        state.formDefinition.slides.push({
+          elements: [],
+        });
+      })
+    ),
+
+  deleteSlide: (slideIndex) =>
+    set(
+      produce((state: FormState) => {
+        if (state.formDefinition.slides.length > 1) {
+          state.formDefinition.slides.splice(slideIndex, 1);
+        } else {
+          console.warn("Cannot delete the last slide.");
         }
       })
     ),
