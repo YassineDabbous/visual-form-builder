@@ -6,9 +6,7 @@ import TextInput from './TextInput';
 interface SharedPropertiesProps {
   element: FormElement;
 }
-
-// A reusable checkbox component for boolean properties
-export const  BooleanToggle = ({
+export const BooleanToggle = ({
   label,
   description,
   checked,
@@ -68,6 +66,12 @@ const SharedProperties = ({ element }: SharedPropertiesProps) => {
           description="Focus this field when the slide loads."
           checked={element.autofocus || false}
           onChange={(e) => updateElement(element.id, { autofocus: e.target.checked })}
+        />
+        <BooleanToggle
+          label="Subfield Style"
+          description="Use smaller fonts for question/description."
+          checked={element.subfield || false}
+          onChange={(e) => updateElement(element.id, { subfield: e.target.checked })}
         />
       </div>
     </div>
