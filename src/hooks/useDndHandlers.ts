@@ -1,18 +1,7 @@
 import type { DragEndEvent } from '@dnd-kit/core';
-import useFormStore from '../store/formStore';
-import type { FormElement } from '../types/form';
-
-const generateElement = (type: string): FormElement => {
-  const baseElement = { id: self.crypto.randomUUID(), type };
-  switch (type) {
-    case 'h1': return { ...baseElement, text: 'New Heading' };
-    case 'p': return { ...baseElement, text: 'New paragraph text.' };
-    case 'text': return { ...baseElement, question: 'New Text Question', placeholder: 'Placeholder' };
-    case 'email': return { ...baseElement, question: 'New Email Question', placeholder: 'name@example.com' };
-    default: return baseElement;
-  }
-};
-
+import useFormStore from '../store/formStore'; 
+import { generateElement } from '../lib/element-generator';
+ 
 export const useDndHandlers = () => {
   const moveElement = useFormStore((state) => state.moveElement);
   const addElementFromToolbox = useFormStore((state) => state.addElementFromToolbox);
