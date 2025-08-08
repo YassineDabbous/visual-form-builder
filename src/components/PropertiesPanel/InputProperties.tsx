@@ -5,6 +5,7 @@ import { isNameUnique } from '../../lib/validation';
 import type { FormElement } from '../../types/form';
 import SharedProperties, { BooleanToggle } from './shared/SharedProperties';
 import DisplayConditionEditor from './shared/DisplayConditionEditor';
+import TagsInput from './shared/TagsInput';
 
 interface InputPropertiesProps {
   element: FormElement;
@@ -105,6 +106,26 @@ const InputProperties = ({ element }: InputPropertiesProps) => {
             <TextInput label="Unit (Prefix)" value={element.unit || ''} onChange={(e) => updateElement(element.id, { unit: e.target.value })} placeholder="$" />
             <TextInput label="Unit (Suffix)" value={element.unitEnd || ''} onChange={(e) => updateElement(element.id, { unitEnd: e.target.value })} placeholder="kg" />
           </div>
+        </div>
+      )}
+
+      {element.type === 'tel' && (
+        <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
+          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Telephone Options</h3>
+           <TextInput
+            label="Default Country"
+            value={element.country || ''}
+            onChange={(e) => updateElement(element.id, { country: e.target.value.toUpperCase() })}
+            placeholder="US"
+            description="ISO alpha-2 country code."
+          />
+          <TagsInput
+            label="Available Countries"
+            tags={element.availableCountries || []}
+            onTagsChange={(newTags) => updateElement(element.id, { availableCountries: newTags.length > 0 ? newTags : undefined })}
+            placeholder="Add country and press Enter..."
+            description="ISO alpha-2 codes. e.g., US, CA, GB"
+          />
         </div>
       )}
 
