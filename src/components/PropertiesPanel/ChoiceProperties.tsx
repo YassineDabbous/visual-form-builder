@@ -82,6 +82,15 @@ const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
       <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
         <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Choice Options</h3>
 
+        {element.type === 'select' && (
+          <TextInput
+            label="Default Selected Value"
+            value={element.selected || ''}
+            onChange={(e) => updateElement(element.id, { selected: e.target.value })}
+            description="Must match one of the option values exactly."
+          />
+        )}
+        
         {element.type === 'choice' && (
           <div className="space-y-3">
             <BooleanToggle label="Allow multiple selections" checked={element.multiple || false} onChange={(e) => updateElement(element.id, { multiple: e.target.checked })} />
