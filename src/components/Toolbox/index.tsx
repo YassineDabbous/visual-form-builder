@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import {
-  Type, Mail, Heading1, Pilcrow, Hash, Globe, Phone, KeyRound, Star, MessageSquareQuote,
-  List, ListOrdered, Minus, Code2, Calendar, Clock, Image, ChevronsUpDown, CheckSquare2
+  Type, Mail, Heading, Pilcrow, Hash, Globe, Phone, KeyRound, Star, MessageSquareQuote,
+  List, ListOrdered, Minus, Code2, Calendar, Clock, Image, ChevronsUpDown, CheckSquare2, FileUp
 } from 'lucide-react';
 
 const DraggableToolboxButton = ({ type, label, icon }: { type: string; label: string; icon: React.ReactNode }) => {
@@ -27,7 +27,7 @@ const Toolbox = () => {
         <div>
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Content</h3>
           <div className="grid grid-cols-2 gap-2">
-            <DraggableToolboxButton type="h1" label="Heading" icon={<Heading1 size={20} />} />
+            <DraggableToolboxButton type="heading" label="Heading" icon={<Heading size={20} />} />
             <DraggableToolboxButton type="p" label="Paragraph" icon={<Pilcrow size={20} />} />
             <DraggableToolboxButton type="hr" label="Divider" icon={<Minus size={20} />} />
             <DraggableToolboxButton type="blockquote" label="Quote" icon={<MessageSquareQuote size={20} />} />
@@ -50,6 +50,7 @@ const Toolbox = () => {
             <DraggableToolboxButton type="date" label="Date" icon={<Calendar size={20} />} />
             <DraggableToolboxButton type="time" label="Time" icon={<Clock size={20} />} />
             <DraggableToolboxButton type="datetime" label="Date & Time" icon={<Calendar size={20} />} />
+            <DraggableToolboxButton type="file" label="File Upload" icon={<FileUp size={20} />} />
           </div>
         </div>
         

@@ -8,10 +8,18 @@ export const generateElement = (type: string): FormElement => {
   const baseElement: FormElement = { id, type };
 
   switch (type) {
-    // === CONTENT ===
-    case 'h1': return { ...baseElement, text: 'New Heading 1' };
-    case 'h2': return { ...baseElement, text: 'New Heading 2' };
-    case 'h3': return { ...baseElement, text: 'New Heading 3' };
+    // === Generic 'heading' type for H1, H2, ... ===
+    case 'heading':
+      return { ...baseElement, type: 'h2', text: 'New Heading' };
+
+    case 'h1':
+    case 'h2':
+    case 'h3':
+    case 'h4':
+    case 'h5':
+    case 'h6':
+      return { ...baseElement, text: 'New Heading' };
+    
     case 'p': return { ...baseElement, text: 'New paragraph text.' };
     case 'hr': return baseElement;
     case 'blockquote': return { ...baseElement, text: 'A notable quote.' };
@@ -19,7 +27,6 @@ export const generateElement = (type: string): FormElement => {
     case 'ul': return { ...baseElement, items: ['List item 1', 'List item 2'] };
     case 'ol': return { ...baseElement, items: ['First item', 'Second item'] };
     
-    // === SIMPLE INPUTS ===
     case 'text': return { ...baseElement, name: generateElementName(type), question: 'Text Question', placeholder: 'Placeholder' };
     case 'textarea': return { ...baseElement, name: generateElementName(type), question: 'Textarea Question', placeholder: 'Enter longer text...' };
     case 'email': return { ...baseElement, name: generateElementName(type), question: 'Email Question', placeholder: 'name@example.com' };
@@ -28,13 +35,9 @@ export const generateElement = (type: string): FormElement => {
     case 'tel': return { ...baseElement, name: generateElementName(type), question: 'Telephone Question' };
     case 'number': return { ...baseElement, name: generateElementName(type), question: 'Number Question', min: 0 };
     case 'file': return { ...baseElement, name: generateElementName(type), question: 'File Upload' };
-    
-    // === DATE/TIME INPUTS ===
     case 'date': return { ...baseElement, name: generateElementName(type), question: 'Date Question' };
     case 'time': return { ...baseElement, name: generateElementName(type), question: 'Time Question' };
     case 'datetime': return { ...baseElement, name: generateElementName(type), question: 'Date & Time Question' };
-    
-    // === CHOICE-BASED INPUTS ===
     case 'select': return { ...baseElement, name: generateElementName(type), question: 'Select Question', options: ['Option 1', 'Option 2'] };
     case 'choice': return { ...baseElement, name: generateElementName(type), question: 'Choice Question', choices: ['Choice 1', 'Choice 2'] };
     case 'pictureChoice': return { ...baseElement, name: generateElementName(type), question: 'Picture Choice Question', choices: [
@@ -42,8 +45,6 @@ export const generateElement = (type: string): FormElement => {
         { label: 'Option 2', value: 'option2', image: 'https://img.icons8.com/clouds/200/gallery.png' },
       ]
     };
-
-    // === SCALE/RATING INPUTS ===
     case 'rating': return { ...baseElement, name: generateElementName(type), question: 'Rating Question', max: 5 };
     case 'opinionScale': return { ...baseElement, name: generateElementName(type), question: 'Opinion Scale Question', min: 0, max: 10, minLabel: 'Disagree', maxLabel: 'Agree' };
 

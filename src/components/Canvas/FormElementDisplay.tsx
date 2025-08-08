@@ -1,6 +1,6 @@
 import React from 'react';
 import type { FormElement } from '../../types/form';
-import { Mail, Type, Star, ChevronsUpDown, Calendar, Clock, KeyRound, Hash, Globe, Phone} from 'lucide-react';
+import { Mail, Type, Star, ChevronsUpDown, Calendar, Clock, KeyRound, Hash, Globe, Phone, FileUp} from 'lucide-react';
 
 interface FormElementDisplayProps {
   element: FormElement;
@@ -22,6 +22,10 @@ const FormElementDisplay = ({ element }: FormElementDisplayProps) => {
     case 'h1': return <h1 className="text-3xl font-bold py-2">{element.text}</h1>;
     case 'h2': return <h2 className="text-2xl font-semibold py-2 border-b">{element.text}</h2>;
     case 'h3': return <h3 className="text-xl font-semibold py-1">{element.text}</h3>;
+    case 'h4': return <h4 className="text-lg font-semibold py-1 text-gray-800">{element.text}</h4>;
+    case 'h5': return <h5 className="text-base font-bold py-1 text-gray-700">{element.text}</h5>;
+    case 'h6': return <h6 className="text-sm font-bold uppercase py-1 text-gray-600">{element.text}</h6>;
+    
     case 'p': return <p className="text-base py-2">{element.text}</p>;
     case 'hr': return <hr className="my-4" />;
     case 'blockquote': return <blockquote className="pl-4 border-l-4 border-gray-300 italic text-gray-600 my-2">{element.text}</blockquote>;
@@ -51,7 +55,7 @@ const FormElementDisplay = ({ element }: FormElementDisplayProps) => {
     case 'opinionScale': return renderInputPlaceholder(element.question || 'Opinion Scale', 'A scale will be shown', <ChevronsUpDown size={16} />);
 
     // FILE
-    case 'file': return renderInputPlaceholder(element.question || 'File Upload', 'No file chosen', <Type size={16} />);
+    case 'file': return renderInputPlaceholder(element.question || 'File Upload', 'No file chosen', <FileUp size={16} />);
 
     default:
       return <div className="p-3 bg-red-100 text-red-700 rounded-lg border border-red-300">Unknown Element Type: {element.type}</div>;

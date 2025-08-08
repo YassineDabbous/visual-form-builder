@@ -77,14 +77,27 @@ const useFormStore = create<FormState>((set, get) => ({
   updateElement: (elementId, newProps) =>
     set(
       produce((state: FormState) => {
-        for (const slide of (state.formDefinition.slides as FormSlide[])) {
-          const elementIndex = slide.elements.findIndex((el) => el.id === elementId);
-          if (elementIndex !== -1) {
-            slide.elements[elementIndex] = {
-              ...slide.elements[elementIndex],
-              ...newProps,
-            };
-            return;
+        let elementRef: FormElement | undefined;
+        for (const slide of state.formDefinition.slides as FormSlide[]) {
+          const element = slide.elements.find((el) => el.id === elementId);
+          if (element) {
+            elementRef = element;
+            break;
+          }
+        }
+
+        if (elementRef) {
+          for (const key in newProps) {
+            const propKey = key as keyof FormElement;
+            const value = newProps[propKey];
+
+            // If the value is an empty string or explicitly false,
+            // delete the property to keep the JSON clean. Otherwise, set it.
+            if (value === '' || value === false) {
+              delete elementRef[propKey];
+            } else {
+              elementRef[propKey] = value;
+            }
           }
         }
       })

@@ -3,21 +3,12 @@ import type { FormElement } from '../../types/form';
 import TextContentProperties from './TextContentProperties';
 import InputProperties from './InputProperties';
 import ChoiceProperties from './ChoiceProperties';
-import ScaleProperties from './ScaleProperties'; // <-- Import
-import PictureChoiceProperties from './PictureChoiceProperties'; // <-- Import
+import ScaleProperties from './ScaleProperties';
+import PictureChoiceProperties from './PictureChoiceProperties';
+import ListProperties from './ListProperties';  
+import CodeProperties from './CodeProperties';  
 
-const PropertiesPanel = () => {
-  const selectedElementId = useFormStore((state) => state.selectedElementId);
-  const formDefinition = useFormStore((state) => state.formDefinition);
-
-  const selectedElement = selectedElementId
-    ? [
-        ...(formDefinition.startSlide?.elements ?? []),
-        ...formDefinition.slides.flatMap((slide) => slide.elements),
-        ...(formDefinition.endSlide?.elements ?? []),
-      ].find((el) => el.id === selectedElementId)
-    : null;
-
+const PropertiesPanel = ({ selectedElement }: { selectedElement: FormElement | null  | undefined }) => {
   if (!selectedElement) {
     return (
       <aside className="w-80 bg-gray-100 p-4 border-l">
@@ -35,23 +26,25 @@ const PropertiesPanel = () => {
       case 'p': case 'blockquote':
         return <TextContentProperties element={element} />;
       
-      // SIMPLE INPUTS
+      case 'ul': case 'ol':
+        return <ListProperties element={element} />;
+      
+      case 'code':
+        return <CodeProperties element={element} />;
+
+      // INPUTS
       case 'email': case 'text': case 'textarea': case 'password':
       case 'url': case 'tel': case 'number': case 'date':
       case 'time': case 'datetime': case 'file':
         return <InputProperties element={element} />;
       
-      // CHOICE-BASED
-      case 'select':
-      case 'choice':
+      case 'select': case 'choice':
         return <ChoiceProperties element={element} />;
       
       case 'pictureChoice':
         return <PictureChoiceProperties element={element} />;
 
-      // SCALES & RATINGS
-      case 'rating':
-      case 'opinionScale':
+      case 'rating': case 'opinionScale':
         return <ScaleProperties element={element} />;
 
       default:
@@ -76,4 +69,20 @@ const PropertiesPanel = () => {
   );
 };
 
-export default PropertiesPanel;
+// This wrapper component gets the selected element and passes it down
+const PropertiesPanelWrapper = () => {
+  const selectedElementId = useFormStore((state) => state.selectedElementId);
+  const formDefinition = useFormStore((state) => state.formDefinition);
+
+  const selectedElement = selectedElementId
+    ? [
+        ...(formDefinition.startSlide?.elements ?? []),
+        ...formDefinition.slides.flatMap((slide) => slide.elements),
+        ...(formDefinition.endSlide?.elements ?? []),
+      ].find((el) => el.id === selectedElementId)
+    : null;
+    
+  return <PropertiesPanel selectedElement={selectedElement} />;
+};
+
+export default PropertiesPanelWrapper;
