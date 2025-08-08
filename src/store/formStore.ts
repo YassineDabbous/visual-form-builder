@@ -12,6 +12,14 @@ interface FormState {
   setSelectedElementId: (id: string | null) => void;
   updateElement: (elementId: string, newProps: Partial<FormElement>) => void; 
   addElement: (slideIndex: number, element: FormElement) => void;
+
+  moveElement: (
+    sourceSlideIndex: number,
+    sourceElementIndex: number,
+    destinationSlideIndex: number,
+    destinationElementIndex: number
+  ) => void;
+  addElementFromToolbox: (slideIndex: number, destinationIndex: number, element: FormElement) => void;
 }
 
 const useFormStore = create<FormState>((set) => ({
@@ -22,8 +30,6 @@ const useFormStore = create<FormState>((set) => ({
       {
         elements: [
           { id: generateId(), type: 'h1', text: 'My New Form' },
-          { id: generateId(), type: 'p', text: 'This is an introductory paragraph.' },
-          { id: generateId(), type: 'email', question: 'Your Email', placeholder: 'Enter your email here' },
         ],
       },
     ],
@@ -52,6 +58,33 @@ const useFormStore = create<FormState>((set) => ({
       produce((state: FormState) => {
         if (state.formDefinition.slides[slideIndex]) {
           state.formDefinition.slides[slideIndex].elements.push(element);
+        }
+      })
+    ),
+
+    
+  moveElement: (sourceSlideIndex, sourceElementIndex, destinationSlideIndex, destinationElementIndex) =>
+    set(
+      produce((state: FormState) => {
+        const sourceSlide = state.formDefinition.slides[sourceSlideIndex];
+        const destinationSlide = state.formDefinition.slides[destinationSlideIndex];
+
+        if (!sourceSlide || !destinationSlide) return;
+
+        const [movedElement] = sourceSlide.elements.splice(sourceElementIndex, 1);
+
+        if (movedElement) {
+          destinationSlide.elements.splice(destinationElementIndex, 0, movedElement);
+        }
+      })
+    ),
+
+  addElementFromToolbox: (slideIndex, destinationIndex, element) =>
+    set(
+      produce((state: FormState) => {
+        const slide = state.formDefinition.slides[slideIndex];
+        if (slide) {
+          slide.elements.splice(destinationIndex, 0, element);
         }
       })
     ),
