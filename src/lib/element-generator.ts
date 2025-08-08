@@ -1,7 +1,7 @@
 import type { FormElement } from "../types/form";
 
 // Generates a short random string for uniqueness
-const randomId = () => Math.random().toString(36).substring(2, 9);
+export const randomId = () => Math.random().toString(36).substring(2, 9);
 
 // Generates a unique name, e.g., "email_f7h5r3g"
 const generateElementName = (type: string) => `${type}_${randomId()}`;

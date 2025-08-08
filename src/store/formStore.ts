@@ -1,9 +1,7 @@
 import { create } from 'zustand';
 import type { FormDefinition, FormElement, FormSlide } from '../types/form';
 import { produce } from 'immer';
-
-
-const generateId = () => self.crypto.randomUUID();
+import { randomId } from '../lib/element-generator';
 
 interface FormState {
   formDefinition: FormDefinition;
@@ -33,7 +31,7 @@ const useFormStore = create<FormState>((set) => ({
     slides: [
       {
         elements: [
-          { id: generateId(), type: 'h1', text: 'My New Form' },
+          { id: randomId(), type: 'h1', text: 'My New Form' },
         ],
       },
     ],
