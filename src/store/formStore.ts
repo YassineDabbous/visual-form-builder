@@ -3,9 +3,14 @@ import type { FormDefinition, FormElement, FormSlide } from '../types/form';
 import { produce } from 'immer';
 import { randomId } from '../lib/element-generator';
 
+const LOCAL_STORAGE_KEY = 'formsmd_builder_save';
+
 interface FormState {
   formDefinition: FormDefinition;
   selectedElementId: string | null;
+  
+  setFormDefinition: (definition: FormDefinition) => void;
+  saveToLocalStorage: () => void;
   
   setSelectedElementId: (id: string | null) => void;
   updateElement: (elementId: string, newProps: Partial<FormElement>) => void; 
@@ -24,7 +29,7 @@ interface FormState {
   deleteSlide: (slideIndex: number) => void;
 }
 
-const useFormStore = create<FormState>((set) => ({
+const useFormStore = create<FormState>((set, get) => ({
   formDefinition: {
     id: 'new-form',
     postUrl: '/api/submit',
@@ -37,6 +42,19 @@ const useFormStore = create<FormState>((set) => ({
     ],
   },
   selectedElementId: null,
+  
+  setFormDefinition: (definition) => {
+    set({
+      formDefinition: definition,
+      selectedElementId: null,
+    });
+  },
+
+  saveToLocalStorage: () => {
+    const currentState = get();
+    const jsonString = JSON.stringify(currentState.formDefinition);
+    localStorage.setItem(LOCAL_STORAGE_KEY, jsonString);
+  },
 
   setSelectedElementId: (id) => set({ selectedElementId: id }),
 

@@ -5,6 +5,8 @@ import DragOverlayContent from './components/shared/DragOverlayContent';
 import BuilderView from './views/BuilderView';
 import LivePreview from './views/LivePreview';
 import JsonOutputView from './views/JsonOutputView';
+import useFormStore from './store/formStore'; 
+import { Save, FolderUp } from 'lucide-react';
 
 type ActiveTab = 'builder' | 'preview' | 'json';
 
@@ -12,6 +14,32 @@ function App() {
   const { handleDragEnd } = useDndHandlers();
   const [activeDragItem, setActiveDragItem] = useState<DragStartEvent['active'] | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('builder');
+
+  
+  const saveToLocalStorage = useFormStore((state) => state.saveToLocalStorage);
+  const setFormDefinition = useFormStore((state) => state.setFormDefinition);
+
+  const handleSave = () => {
+    saveToLocalStorage();
+    alert('Form saved to browser storage!');
+  };
+  const handleLoad = () => {
+    const savedJson = localStorage.getItem('formsmd_builder_save');
+    if (savedJson) {
+      if (window.confirm('Are you sure you want to load the saved form? This will overwrite your current work.')) {
+        try {
+          const loadedDefinition = JSON.parse(savedJson);
+          setFormDefinition(loadedDefinition);
+          alert('Form loaded successfully!');
+        } catch (error) {
+          alert('Error: The saved data could not be loaded. It may be corrupted.');
+          console.error("Failed to parse saved form data:", error);
+        }
+      }
+    } else {
+      alert('No saved form found in browser storage.');
+    }
+  };
 
   const handleDragStart = (event: DragStartEvent) => setActiveDragItem(event.active);
   const handleDragEndAndClear = (event: DragEndEvent) => {
@@ -35,10 +63,30 @@ function App() {
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEndAndClear}>
       <div className="flex flex-col h-screen w-screen bg-gray-100 text-gray-800">
-        <header className="flex items-end px-4 pt-2 border-b border-gray-200 bg-gray-100">
-          <TabButton tab="builder" label="Builder" />
-          <TabButton tab="preview" label="Live Preview" />
-          <TabButton tab="json" label="Export JSON" />
+        <header className="flex justify-between items-end px-4 pt-2 border-b border-gray-200 bg-gray-100">
+          <div>
+            <TabButton tab="builder" label="Builder" />
+            <TabButton tab="preview" label="Live Preview" />
+            <TabButton tab="json" label="Export JSON" />
+          </div>
+
+          
+          <div className="flex items-center gap-2 mb-1">
+            <button 
+              onClick={handleLoad}
+              className="flex items-center gap-2 px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              <FolderUp size={14} />
+              Load
+            </button>
+            <button 
+              onClick={handleSave}
+              className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
+            >
+              <Save size={14} />
+              Save
+            </button>
+          </div>
         </header>
 
         <div className="flex-1 overflow-hidden">
