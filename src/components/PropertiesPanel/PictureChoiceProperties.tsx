@@ -1,9 +1,11 @@
+import React, { useState, useEffect } from 'react';
 import type { FormElement } from '../../types/form';
 import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import SharedProperties, { BooleanToggle } from './shared/SharedProperties';
 import DisplayConditionEditor from './shared/DisplayConditionEditor';
+import { isNameUnique } from '../../lib/validation';
 
 interface PictureChoice {
   label: string;
@@ -17,8 +19,20 @@ interface PictureChoicePropertiesProps {
 
 const PictureChoiceProperties = ({ element }: PictureChoicePropertiesProps) => {
   const updateElement = useFormStore((state) => state.updateElement);
+  const formDefinition = useFormStore((state) => state.formDefinition);
   const choices: PictureChoice[] = element.choices || [];
   const checkedValues: string[] = element.checked || [];
+
+  const [isNameValid, setIsNameValid] = useState(true);
+
+  useEffect(() => {
+    setIsNameValid(isNameUnique(element.name, element.id, formDefinition));
+  }, [element.name, element.id, formDefinition]);
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9_]/g, '');
+    updateElement(element.id, { name: sanitizedValue || element.id });
+  };
 
   const handlePropertyChange = (index: number, prop: keyof PictureChoice, value: string) => {
     const newChoices = [...choices];
@@ -58,6 +72,16 @@ const PictureChoiceProperties = ({ element }: PictureChoicePropertiesProps) => {
         value={element.question || ''}
         onChange={(e) => updateElement(element.id, { question: e.target.value })}
       />
+
+      <div>
+        <TextInput
+          label="Name / ID"
+          value={element.name || ''}
+          onChange={handleNameChange}
+          className={`w-full p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!isNameValid ? 'border-red-500' : 'border-gray-300'}`}
+        />
+        {!isNameValid && <p className="text-xs text-red-600 mt-1">This name is already in use.</p>}
+      </div>
       
       <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
         <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Picture Options</h3>

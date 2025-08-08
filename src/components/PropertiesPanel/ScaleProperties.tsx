@@ -4,6 +4,7 @@ import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
 import SharedProperties, { BooleanToggle } from './shared/SharedProperties';
 import DisplayConditionEditor from './shared/DisplayConditionEditor';
+import { isNameUnique } from '../../lib/validation';
 
 const SelectInput = ({ label, children, ...props }: React.SelectHTMLAttributes<HTMLSelectElement> & { label: string }) => (
     <div>
@@ -21,38 +22,35 @@ interface ScalePropertiesProps {
 
 const ScaleProperties = ({ element }: ScalePropertiesProps) => {
   const updateElement = useFormStore((state) => state.updateElement);
+  const formDefinition = useFormStore((state) => state.formDefinition);
 
+  const [isNameValid, setIsNameValid] = useState(true);
   const [errors, setErrors] = useState<{ startAt?: string; outOf?: string }>({});
 
-  const isOpinion = element.type === 'opinionScale';
-
   useEffect(() => {
-    const newErrors: { startAt?: string; outOf?: string } = {};
-
-    if (isOpinion) {
-      // Validate startAt
-      if (element.startAt !== undefined && ![0, 1].includes(element.startAt)) {
-        newErrors.startAt = 'Must be 0 or 1.';
-      }
-
-      // Validate outOf
-      if (element.outOf !== undefined && (element.outOf < 5 || element.outOf > 10)) {
-        newErrors.outOf = 'Must be between 5 and 10.';
-      }
-    }
+    setIsNameValid(isNameUnique(element.name, element.id, formDefinition));
     
+    const newErrors: { startAt?: string; outOf?: string } = {};
+    if (element.type === 'opinionScale') {
+      if (element.startAt !== undefined && ![0, 1].includes(element.startAt)) newErrors.startAt = 'Must be 0 or 1.';
+      if (element.outOf !== undefined && (element.outOf < 5 || element.outOf > 10)) newErrors.outOf = 'Must be between 5 and 10.';
+    }
     setErrors(newErrors);
-  }, [element.startAt, element.outOf, isOpinion]);
+  }, [element.name, element.startAt, element.outOf, element.id, formDefinition]);
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitizedValue = e.target.value.replace(/[^a-zA-Z0-9_]/g, '');
+    updateElement(element.id, { name: sanitizedValue || element.id });
+  };
 
   const handleNumberChange = (prop: 'outOf' | 'startAt' | 'value', value: string) => {
     const numValue = value === '' ? undefined : parseInt(value, 10);
-    // Allow the invalid value to be set, the UI will show the error
     updateElement(element.id, { [prop]: numValue });
   };
 
   const isRating = element.type === 'rating';
-  
+  const isOpinion = element.type === 'opinionScale';
+
   return (
     <div className="space-y-4">
       <TextInput
@@ -60,6 +58,17 @@ const ScaleProperties = ({ element }: ScalePropertiesProps) => {
         value={element.question || ''}
         onChange={(e) => updateElement(element.id, { question: e.target.value })}
       />
+
+      <div>
+        <TextInput
+          label="Name / ID"
+          value={element.name || ''}
+          onChange={handleNameChange}
+          className={`w-full p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!isNameValid ? 'border-red-500' : 'border-gray-300'}`}
+        />
+        {!isNameValid && <p className="text-xs text-red-600 mt-1">This name is already in use.</p>}
+      </div>
+
       <TextInput
         label="Default Value"
         type="number"
@@ -84,23 +93,11 @@ const ScaleProperties = ({ element }: ScalePropertiesProps) => {
           <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Opinion Scale Options</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <TextInput
-                label="Starts At (0 or 1)"
-                type="number"
-                value={element.startAt ?? ''}
-                onChange={(e) => handleNumberChange('startAt', e.target.value)}
-                className={`w-full p-2 border rounded-md shadow-sm ${errors.startAt ? 'border-red-500' : 'border-gray-300'}`}
-              />
+              <TextInput label="Starts At (0 or 1)" type="number" value={element.startAt ?? ''} onChange={(e) => handleNumberChange('startAt', e.target.value)} className={`w-full p-2 border rounded-md shadow-sm ${errors.startAt ? 'border-red-500' : 'border-gray-300'}`} />
               {errors.startAt && <p className="text-xs text-red-600 mt-1">{errors.startAt}</p>}
             </div>
             <div>
-              <TextInput
-                label="Ends At (5-10)"
-                type="number"
-                value={element.outOf ?? ''}
-                onChange={(e) => handleNumberChange('outOf', e.target.value)}
-                className={`w-full p-2 border rounded-md shadow-sm ${errors.outOf ? 'border-red-500' : 'border-gray-300'}`}
-              />
+              <TextInput label="Ends At (5-10)" type="number" value={element.outOf ?? ''} onChange={(e) => handleNumberChange('outOf', e.target.value)} className={`w-full p-2 border rounded-md shadow-sm ${errors.outOf ? 'border-red-500' : 'border-gray-300'}`} />
               {errors.outOf && <p className="text-xs text-red-600 mt-1">{errors.outOf}</p>}
             </div>
           </div>
