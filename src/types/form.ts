@@ -4,17 +4,19 @@ export interface FormElement {
   [key: string]: any; 
 }
 
+interface StringKeyObject {
+  [key: string]: any;
+}
+
 export interface FormSlide {
-  slideOptions?: {
-    pageProgress?: string;
-    [key: string]: any;
-  };
+  slideOptions?: StringKeyObject;
   elements: FormElement[];
 }
 
 export interface FormDefinition {
-  id: string;
-  postUrl: string;
+  settings: StringKeyObject;
+  options: StringKeyObject;
+
   startSlide?: FormSlide;
   slides: FormSlide[];
   endSlide?: FormSlide;

@@ -8,6 +8,7 @@ const LOCAL_STORAGE_KEY = 'formsmd_builder_save';
 interface FormState {
   formDefinition: FormDefinition;
   selectedElementId: string | null;
+  selectedSlideIndex: number | null | 'start' | 'end';
   
   setFormDefinition: (definition: FormDefinition) => void;
   saveToLocalStorage: () => void;
@@ -27,21 +28,66 @@ interface FormState {
   
   addSlide: () => void;
   deleteSlide: (slideIndex: number) => void;
+  
+  setSelectedSlideIndex: (index: number | null | 'start' | 'end') => void;
+  updateFormSettings: (newSettings: { [key: string]: any }) => void;
+  updateSlideSettings: (slideIndex: number | 'start' | 'end', newOptions: { [key: string]: any }) => void;
 }
 
 const useFormStore = create<FormState>((set, get) => ({
   formDefinition: {
-    id: 'new-form',
-    postUrl: '/api/submit',
+    settings: {
+      id: 'my-awesome-form',
+      postUrl: '/api/submit',
+    },
+    options: {},  // Initialize as empty object
     slides: [
       {
         elements: [
-          { id: randomId(), type: 'h1', text: 'My New Form' },
+          // Add a default element for demonstration
+          { id: randomId(), type: 'h1', text: 'My New Form' }
         ],
       },
     ],
   },
   selectedElementId: null,
+  selectedSlideIndex: null,
+
+  // --- ACTION IMPLEMENTATIONS ---
+  setSelectedElementId: (id) => {
+    set({ selectedElementId: id, selectedSlideIndex: null });
+  },
+
+  setSelectedSlideIndex: (index) => {
+    set({ selectedSlideIndex: index, selectedElementId: null });
+  },
+  
+  updateFormSettings: (newSettings) =>
+    set(
+      produce((state: FormState) => {
+        state.formDefinition.settings = { ...state.formDefinition.settings, ...newSettings };
+      })
+    ),
+
+  updateSlideSettings: (slideIndex, newOptions) =>
+    set(
+      produce((state: FormState) => {
+        let targetSlide: FormSlide | undefined;
+        if (slideIndex === 'start') {
+          if (!state.formDefinition.startSlide) state.formDefinition.startSlide = { elements: [] };
+          targetSlide = state.formDefinition.startSlide;
+        } else if (slideIndex === 'end') {
+          if (!state.formDefinition.endSlide) state.formDefinition.endSlide = { elements: [] };
+          targetSlide = state.formDefinition.endSlide;
+        } else if (state.formDefinition.slides[slideIndex]) {
+          targetSlide = state.formDefinition.slides[slideIndex];
+        }
+
+        if (targetSlide) {
+          targetSlide.slideOptions = { ...(targetSlide.slideOptions || {}), ...newOptions };
+        }
+      })
+    ),
   
   setFormDefinition: (definition) => {
     set({
@@ -55,8 +101,7 @@ const useFormStore = create<FormState>((set, get) => ({
     const jsonString = JSON.stringify(currentState.formDefinition);
     localStorage.setItem(LOCAL_STORAGE_KEY, jsonString);
   },
-
-  setSelectedElementId: (id) => set({ selectedElementId: id }),
+ 
 
   deleteElement: (elementId) =>
     set(
