@@ -1,6 +1,7 @@
 import type { FormElement } from "../types/form";
 
 export const randomId = () => Math.random().toString(36).substring(2, 9);
+// export const randomId = () => self.crypto.randomUUID();
 const generateElementName = (type: string) => `${type}_${randomId()}`;
 
 export const generateElement = (type: string): FormElement => {

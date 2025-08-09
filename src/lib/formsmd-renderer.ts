@@ -2,10 +2,7 @@ import { Composer } from 'formsmd';
 import type { FormDefinition } from '../types/form';
 
 export const createComposerFromDefinition = (formDefinition: FormDefinition): Composer => {
-  const composer = new Composer({
-    id: formDefinition.id,
-    postUrl: formDefinition.postUrl,
-  });
+  const composer = new Composer(formDefinition.settings);
 
   const formElementsMap = {
     h1: (el: any) => composer.h1(el.text),

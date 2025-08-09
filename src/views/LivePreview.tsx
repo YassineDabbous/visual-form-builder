@@ -16,12 +16,12 @@ const LivePreview = () => {
 
     try {
       const formHost = document.createElement('div');
-      formHost.id = formDefinition.id;
+      formHost.id = formDefinition.settings.id || 'formsmd-preview';
       container.appendChild(formHost);
       
       const composer = createComposerFromDefinition(formDefinition);
       
-      const formsmd = new Formsmd(composer.template, formHost, {});
+      const formsmd = new Formsmd(composer.template, formHost, formDefinition.options);
       formsmd.init();
 
     } catch (error) {
