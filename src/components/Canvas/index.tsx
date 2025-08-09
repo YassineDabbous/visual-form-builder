@@ -4,7 +4,7 @@ import FormElementDisplay from './FormElementDisplay';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Trash2 } from 'lucide-react';
+import { GripVertical, Trash2, Settings } from 'lucide-react';
 
 const SortableFormElement = ({ element, slideIndex }: { element: any; slideIndex: number; }) => {
   const slides = useFormStore((state) => state.formDefinition.slides);
@@ -15,11 +15,7 @@ const SortableFormElement = ({ element, slideIndex }: { element: any; slideIndex
     data: { element, type: element.type, isCanvasElement: true, slideIndex, elementIndex },
   });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
+  const style = { transform: CSS.Transform.toString(transform), transition };
   const selectedElementId = useFormStore((state) => state.selectedElementId);
   const setSelectedElementId = useFormStore((state) => state.setSelectedElementId);
   const deleteElement = useFormStore((state) => state.deleteElement);
@@ -59,7 +55,11 @@ const SortableFormElement = ({ element, slideIndex }: { element: any; slideIndex
 
 const SlideContainer = ({ slide, slideIndex }: { slide: any; slideIndex: number }) => {
   const deleteSlide = useFormStore((state) => state.deleteSlide);
+  const setSelectedSlideIndex = useFormStore((state) => state.setSelectedSlideIndex);
+  const selectedSlideIndex = useFormStore((state) => state.selectedSlideIndex);
   const { setNodeRef } = useDroppable({ id: `slide-${slideIndex}`, data: { slideIndex, isSlide: true } });
+
+  const isSelected = selectedSlideIndex === slideIndex;
 
   const handleDelete = () => {
     if (window.confirm(`Are you sure you want to delete Slide ${slideIndex + 1}?`)) {
@@ -69,12 +69,17 @@ const SlideContainer = ({ slide, slideIndex }: { slide: any; slideIndex: number 
 
   return (
     <SortableContext items={slide.elements.map((el: any) => el.id)} strategy={verticalListSortingStrategy}>
-      <div className="mb-8 p-4 border border-dashed rounded-lg bg-white shadow-sm">
+      <div className={`mb-8 p-4 border rounded-lg bg-white shadow-sm transition-all ${isSelected ? 'border-blue-500 ring-2 ring-blue-200' : 'border-dashed'}`}>
         <div className="flex justify-between items-center mb-4">
           <span className="text-sm text-gray-500 font-semibold tracking-wider">Slide {slideIndex + 1}</span>
-          <button onClick={handleDelete} className="p-1 text-gray-400 hover:text-red-600 transition-colors">
-            <Trash2 size={16} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setSelectedSlideIndex(slideIndex)} className={`p-1 text-gray-400 hover:text-blue-600 transition-colors ${isSelected ? 'text-blue-600' : ''}`}>
+              <Settings size={16} />
+            </button>
+            <button onClick={handleDelete} className="p-1 text-gray-400 hover:text-red-600 transition-colors">
+              <Trash2 size={16} />
+            </button>
+          </div>
         </div>
         <div ref={setNodeRef} className="space-y-4 min-h-[100px] p-4 bg-gray-50 rounded-md">
           {slide.elements.map((element: any) => (
@@ -94,10 +99,17 @@ const SlideContainer = ({ slide, slideIndex }: { slide: any; slideIndex: number 
 const Canvas = () => {
   const formDefinition = useFormStore((state) => state.formDefinition);
   const addSlide = useFormStore((state) => state.addSlide);
+  const setSelectedElementId = useFormStore((state) => state.setSelectedElementId);
+
+  const handleCanvasClick = (e: React.MouseEvent) => {
+    if (e.currentTarget === e.target) {
+      setSelectedElementId(null);
+    }
+  };
 
   return (
-    <main className="flex-1 p-8 bg-gray-100 overflow-y-auto">
-      <div className="max-w-3xl mx-auto">
+    <main onClick={handleCanvasClick} className="flex-1 p-8 bg-gray-100 overflow-y-auto cursor-pointer">
+      <div className="max-w-3xl mx-auto cursor-default">
         {formDefinition.slides.map((slide, slideIndex) => (
           <SlideContainer key={slideIndex} slide={slide} slideIndex={slideIndex} />
         ))}
