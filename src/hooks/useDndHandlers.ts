@@ -1,7 +1,7 @@
 import type { DragEndEvent } from '@dnd-kit/core';
-import useFormStore from '../store/formStore'; 
+import useFormStore from '../store/formStore';
 import { generateElement } from '../lib/element-generator';
- 
+
 export const useDndHandlers = () => {
   const moveElement = useFormStore((state) => state.moveElement);
   const addElementFromToolbox = useFormStore((state) => state.addElementFromToolbox);
@@ -12,47 +12,35 @@ export const useDndHandlers = () => {
     if (!over) return;
 
     const isToolboxElement = active.data.current?.isToolboxElement;
-
+    
     if (isToolboxElement) {
       const type = active.id as string;
       const newElement = generateElement(type);
       
-      const targetSlideIndex = over.data.current?.slideIndex;
-      const isDroppingOnSlide = over.data.current?.isSlide;
-      
-      let destinationIndex = 0;
-      if (isDroppingOnSlide) {
-        destinationIndex = 0; 
-      } else {
-        destinationIndex = over.data.current?.elementIndex ?? 0;
+      const overIsSlide = over.data.current?.isSlide;
+      const overSlideId = over.data.current?.slideIndex;
+      let destIndex = 0;
+      if (!overIsSlide) {
+        // Dropping on an element
+        destIndex = over.data.current?.elementIndex ?? 0;
       }
 
-      if (targetSlideIndex !== undefined) {
-        addElementFromToolbox(targetSlideIndex, destinationIndex, newElement);
+      if (overSlideId !== undefined) {
+        addElementFromToolbox(overSlideId, destIndex, newElement);
         setSelectedElementId(newElement.id);
       }
+    } else { // Reordering an existing element
+      const activeElementId = active.id as string;
+      const overElementId = over.id as string;
       
-    } else {
-      const sourceSlideIndex = active.data.current?.slideIndex;
-      const sourceElementIndex = active.data.current?.elementIndex;
+      // If we dropped on the same element, do nothing
+      if (activeElementId === overElementId) return;
       
-      const destinationSlideIndex = over.data.current?.slideIndex;
-      const isDroppingOnSlide = over.data.current?.isSlide;
+      const overIsSlide = over.data.current?.isSlide;
+      const overSlideId = over.data.current?.slideIndex;
       
-      let destinationElementIndex = 0;
-      if (isDroppingOnSlide) {
-        destinationElementIndex = 0;
-      } else {
-        destinationElementIndex = over.data.current?.elementIndex ?? 0;
-      }
-
-      if (
-        sourceSlideIndex !== undefined &&
-        sourceElementIndex !== undefined &&
-        destinationSlideIndex !== undefined &&
-        destinationElementIndex !== undefined
-      ) {
-        moveElement(sourceSlideIndex, sourceElementIndex, destinationSlideIndex, destinationElementIndex);
+      if (overSlideId !== undefined) {
+        moveElement(activeElementId, overIsSlide ? null : overElementId, overSlideId);
       }
     }
   };

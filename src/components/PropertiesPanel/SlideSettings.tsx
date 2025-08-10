@@ -14,7 +14,7 @@ const SlideSettings = ({ slide, slideIndex }: SlideSettingsProps) => {
   const slideOptions = slide.slideOptions || {};
 
   const handleChange = (key: string, value: any) => {
-    const finalValue = value === '' || value === false ? undefined : value;
+    const finalValue = value === '' ? undefined : value;
     updateSlideSettings(slideIndex, { [key]: finalValue });
   };
 
@@ -30,10 +30,10 @@ const SlideSettings = ({ slide, slideIndex }: SlideSettingsProps) => {
         <h2 className="text-lg font-semibold mb-4">{getTitle()}</h2>
         <div className="space-y-4">
           
-          {/* --- SETTINGS FOR REGULAR SLIDES --- */}
+          {/* Settings for all slides EXCEPT start/end */}
           {typeof slideIndex === 'number' && (
             <div className="p-3 border rounded-lg bg-white space-y-4">
-              <h3 className="text-sm font-semibold text-gray-700">Logic & Behavior</h3>
+              <h3 className="text-sm font-semibold text-gray-700">Logic & Progress</h3>
               <TextInput
                 label="Jump Condition"
                 value={slideOptions.jumpCondition || ''}

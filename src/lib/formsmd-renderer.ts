@@ -4,58 +4,70 @@ import type { FormDefinition } from '../types/form';
 export const createComposerFromDefinition = (formDefinition: FormDefinition): Composer => {
   const composer = new Composer(formDefinition.settings);
 
-  const formElementsMap = {
-    h1: (el: any) => composer.h1(el.text),
-    h2: (el: any) => composer.h2(el.text),
-    h3: (el: any) => composer.h3(el.text),
-    h4: (el: any) => composer.h4(el.text),
-    h5: (el: any) => composer.h5(el.text),
-    h6: (el: any) => composer.h6(el.text),
-    p: (el: any) => composer.p(el.text),
+  const formElementsMap: { [key: string]: (el: any) => void } = {
+    h1: (el) => composer.h1(el.text),
+    h2: (el) => composer.h2(el.text),
+    h3: (el) => composer.h3(el.text),
+    h4: (el) => composer.h4(el.text),
+    h5: (el) => composer.h5(el.text),
+    h6: (el) => composer.h6(el.text),
+    p: (el) => composer.p(el.text),
     hr: () => composer.hr(),
-    ul: (el: any) => composer.ul(el.items),
-    ol: (el: any) => composer.ol(el.items),
-    blockquote: (el: any) => composer.blockquote(el.text),
-    code: (el: any) => composer.code(el.content, el.options || {}),
-    text: (el: any) => composer.textInput(el.name, el),
-    textarea: (el: any) => composer.textInput(el.name, { ...el, multiline: true }),
-    email: (el: any) => composer.emailInput(el.name, el),
-    url: (el: any) => composer.urlInput(el.name, el),
-    tel: (el: any) => composer.telInput(el.name, el),
-    password: (el: any) => composer.passwordInput(el.name, el),
-    number: (el: any) => composer.numberInput(el.name, el),
-    select: (el: any) => composer.selectBox(el.name, el),
-    choice: (el: any) => composer.choiceInput(el.name, el),
-    pictureChoice: (el: any) => composer.pictureChoice(el.name, el),
-    rating: (el: any) => composer.ratingInput(el.name, el),
-    opinionScale: (el: any) => composer.opinionScale(el.name, el),
-    datetime: (el: any) => composer.datetimeInput(el.name, el),
-    date: (el: any) => composer.dateInput(el.name, el),
-    time: (el: any) => composer.timeInput(el.name, el),
-    file: (el: any) => composer.fileInput(el.name, el),
+    ul: (el) => composer.ul(el.items),
+    ol: (el) => composer.ol(el.items),
+    blockquote: (el) => composer.blockquote(el.text),
+    code: (el) => composer.code(el.content, el.options || {}),
+    text: (el) => composer.textInput(el.name, el),
+    textarea: (el) => composer.textInput(el.name, { ...el, multiline: true }),
+    email: (el) => composer.emailInput(el.name, el),
+    url: (el) => composer.urlInput(el.name, el),
+    tel: (el) => composer.telInput(el.name, el),
+    password: (el) => composer.passwordInput(el.name, el),
+    number: (el) => composer.numberInput(el.name, el),
+    select: (el) => composer.selectBox(el.name, el),
+    choice: (el) => composer.choiceInput(el.name, el),
+    pictureChoice: (el) => composer.pictureChoice(el.name, el),
+    rating: (el) => composer.ratingInput(el.name, el),
+    opinionScale: (el) => composer.opinionScale(el.name, el),
+    datetime: (el) => composer.datetimeInput(el.name, el),
+    date: (el) => composer.dateInput(el.name, el),
+    time: (el) => composer.timeInput(el.name, el),
+    file: (el) => composer.fileInput(el.name, el),
   };
 
-  const allSlides = [
-    ...(formDefinition.startSlide ? [formDefinition.startSlide] : []),
-    ...formDefinition.slides,
-    ...(formDefinition.endSlide ? [formDefinition.endSlide] : []),
-  ];
+  const renderElements = (elements: any[]) => {
+    if (elements && Array.isArray(elements)) {
+      elements.forEach((element) => {
+        const props = { ...element };
+        delete props.id; 
 
-  allSlides.forEach((slide, index) => {
-    if (slide.elements && Array.isArray(slide.elements)) {
-      slide.elements.forEach((element) => {
-        const renderFunction = formElementsMap[element.type as keyof typeof formElementsMap];
+        const renderFunction = formElementsMap[props.type as keyof typeof formElementsMap];
         if (renderFunction) {
-          renderFunction(element);
+          renderFunction(props);
         } else {
-          console.warn(`Live Preview: Unknown element type in JSON: "${element.type}"`);
+          console.warn(`Live Preview: Unknown element type in JSON: "${props.type}"`);
         }
       });
     }
-    if (index < allSlides.length - 1) {
-      composer.slide(slide.slideOptions || {});
-    }
+  };
+
+  // Handle startSlide
+  if (formDefinition.startSlide) {
+    composer.startSlide(formDefinition.startSlide.slideOptions || {});
+    renderElements(formDefinition.startSlide.elements);
+  }
+  
+  // Handle regular slides
+  formDefinition.slides.forEach((slide) => {
+    composer.slide(slide.slideOptions || {});
+    renderElements(slide.elements);
   });
+
+  // Handle endSlide
+  if (formDefinition.endSlide) {
+    composer.endSlide(formDefinition.endSlide.slideOptions || {});
+    renderElements(formDefinition.endSlide.elements);
+  }
   
   return composer;
 };

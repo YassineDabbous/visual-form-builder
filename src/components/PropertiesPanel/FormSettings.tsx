@@ -9,6 +9,8 @@ type SettingsTab = 'general' | 'appearance' | 'behavior' | 'submission' | 'advan
 const FormSettings = () => {
   const formDefinition = useFormStore((state) => state.formDefinition);
   const updateFormSettings = useFormStore((state) => state.updateFormSettings);
+  const toggleStartSlide = useFormStore((state) => state.toggleStartSlide);
+  const toggleEndSlide = useFormStore((state) => state.toggleEndSlide);
 
   const [activeTab, setActiveTab] = useState<SettingsTab>('general');
 
@@ -56,6 +58,22 @@ const FormSettings = () => {
                 <option value="rtl">Right-to-Left</option>
               </SelectInput>
                <TextInput label="Language (localization)" value={formDefinition.settings.localization || ''} onChange={(e) => handleSettingChange('localization', e.target.value)} placeholder="en" />
+                
+              <div className="p-3 border rounded-lg bg-white space-y-3">
+                 <BooleanToggle
+                  label="Add Welcome Slide"
+                  description="An introductory slide before the main form."
+                  checked={!!formDefinition.startSlide}
+                  onChange={(e) => toggleStartSlide(e.target.checked)}
+                />
+                <BooleanToggle
+                  label="Add End Slide"
+                  description="A final 'thank you' slide after submission."
+                  checked={!!formDefinition.endSlide}
+                  onChange={(e) => toggleEndSlide(e.target.checked)}
+                />
+              </div>
+              
             </div>
           )}
 

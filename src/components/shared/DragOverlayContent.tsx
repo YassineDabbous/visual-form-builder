@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Active } from '@dnd-kit/core';
 import type { FormElement } from '../../types/form';
-import { Heading1, Mail, Pilcrow, Type } from 'lucide-react';
+import { Heading, Mail, Move, Pilcrow, Type } from 'lucide-react';
 import FormElementDisplay from '../Canvas/FormElementDisplay';
 
 interface DragOverlayContentProps {
@@ -21,19 +21,23 @@ const DragOverlayContent = ({ activeItem }: DragOverlayContentProps) => {
   if (isToolboxElement) {
     const type = activeItem.id as string;
     switch (type) {
-      case 'h1': return <ToolboxButtonOverlay label="Heading" icon={<Heading1 size={20} />} />;
+      case 'heading': return <ToolboxButtonOverlay label="Heading" icon={<Heading size={20} />} />;
       case 'p': return <ToolboxButtonOverlay label="Paragraph" icon={<Pilcrow size={20} />} />;
       case 'text': return <ToolboxButtonOverlay label="Text Input" icon={<Type size={20} />} />;
       case 'email': return <ToolboxButtonOverlay label="Email Input" icon={<Mail size={20} />} />;
-      default: return <div>Unknown Toolbox Item</div>;
+      // Add other toolbox items here if you want them to have a custom drag preview
+      default: return <div className="p-3 bg-white rounded-lg shadow-lg">New Item</div>;
     }
   }
 
   const isCanvasElement = activeItem.data.current?.isCanvasElement;
   if (isCanvasElement) {
-    const element = activeItem.data.current?.element as FormElement;
+    const element = activeItem.data.current?.element as FormElement | undefined;
+    if (!element) {
+        return <ToolboxButtonOverlay label="Element" icon={<Move size={20} />} />;
+    }
     return (
-      <div className="bg-white p-2 rounded-lg shadow-lg">
+      <div className="bg-white p-2 rounded-lg shadow-lg opacity-80">
         <FormElementDisplay element={element} />
       </div>
     );
