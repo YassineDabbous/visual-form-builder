@@ -7,6 +7,7 @@ import LivePreview from './views/LivePreview';
 import JsonOutputView from './views/JsonOutputView';
 import useFormStore from './store/formStore'; 
 import { Save, FolderUp } from 'lucide-react';
+import { Toaster, toast } from 'react-hot-toast';
 
 type ActiveTab = 'builder' | 'preview' | 'json';
 
@@ -21,7 +22,7 @@ function App() {
 
   const handleSave = () => {
     saveToLocalStorage();
-    alert('Form saved to browser storage!');
+    toast.success('Form saved successfully!');
   };
   const handleLoad = () => {
     const savedJson = localStorage.getItem('formsmd_builder_save');
@@ -30,14 +31,14 @@ function App() {
         try {
           const loadedDefinition = JSON.parse(savedJson);
           setFormDefinition(loadedDefinition);
-          alert('Form loaded successfully!');
+          toast.success('Form loaded successfully!');
         } catch (error) {
-          alert('Error: The saved data could not be loaded. It may be corrupted.');
+          toast.error('Could not load form. Data may be corrupted.');
           console.error("Failed to parse saved form data:", error);
         }
       }
     } else {
-      alert('No saved form found in browser storage.');
+      toast.error('No saved form found in browser storage.');
     }
   };
 
@@ -62,6 +63,15 @@ function App() {
 
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEndAndClear}>
+
+      <Toaster position="bottom-center" toastOptions={{
+        duration: 3000,
+        style: {
+          background: '#333',
+          color: '#fff',
+        },
+      }} />
+
       <div className="flex flex-col h-screen w-screen bg-gray-100 text-gray-800">
         <header className="flex justify-between items-end px-4 pt-2 border-b border-gray-200 bg-gray-100">
           <div>

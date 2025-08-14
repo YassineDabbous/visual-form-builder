@@ -1,3 +1,5 @@
+// src/components/Canvas/index.tsx
+
 import React from 'react';
 import useFormStore from '../../store/formStore';
 import FormElementDisplay from './FormElementDisplay';
@@ -5,11 +7,43 @@ import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Trash2, Settings, PlayCircle, StopCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+
+const ConfirmationToast = ({
+  toastId,
+  message,
+  onConfirm,
+}: {
+  toastId: string;
+  message: string;
+  onConfirm: () => void;
+}) => (
+  <div className="flex items-center justify-between">
+    <span>{message}</span>
+    <div className="flex gap-2 ml-4">
+      <button
+        onClick={() => {
+          onConfirm();
+          toast.dismiss(toastId);
+        }}
+        className="px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-md hover:bg-red-700"
+      >
+        Confirm
+      </button>
+      <button
+        onClick={() => toast.dismiss(toastId)}
+        className="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+);
 
 const SortableFormElement = ({ element, slideIndex }: { element: any; slideIndex: number | 'start' | 'end'; }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: element.id,
-    data: { isCanvasElement: true, slideIndex: slideIndex, },
+    data: { element, type: element.type, isCanvasElement: true, slideIndex },
   });
 
   const style = { transform: CSS.Transform.toString(transform), transition };
@@ -19,9 +53,13 @@ const SortableFormElement = ({ element, slideIndex }: { element: any; slideIndex
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (window.confirm('Are you sure you want to delete this element?')) {
-      deleteElement(element.id);
-    }
+    toast((t) => (
+      <ConfirmationToast
+        toastId={t.id}
+        message="Delete this element?"
+        onConfirm={() => deleteElement(element.id)}
+      />
+    ), { duration: 5000 });
   };
 
   return (
@@ -42,9 +80,15 @@ const SlideContainer = ({ slide, slideIndex, isSpecial = false, title, icon }: {
   const isSelected = selectedSlideIndex === slideIndex;
 
   const handleDelete = () => {
-    if (typeof slideIndex === 'number' && window.confirm(`Are you sure you want to delete Slide ${slideIndex + 1}?`)) {
-      deleteSlide(slideIndex);
-    }
+     toast((t) => (
+      <ConfirmationToast
+        toastId={t.id}
+        message={`Delete ${title}?`}
+        onConfirm={() => {
+          if (typeof slideIndex === 'number') deleteSlide(slideIndex)
+        }}
+      />
+    ), { duration: 5000 });
   };
 
   return (
@@ -56,12 +100,8 @@ const SlideContainer = ({ slide, slideIndex, isSpecial = false, title, icon }: {
             <span>{title}</span>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => setSelectedSlideIndex(slideIndex)} className={`p-1 text-gray-400 hover:text-blue-600 transition-colors ${isSelected ? 'text-blue-600' : ''}`}>
-              <Settings size={16} />
-            </button>
-            { !isSpecial && ( <button onClick={handleDelete} className="p-1 text-gray-400 hover:text-red-600 transition-colors">
-              <Trash2 size={16} />
-              </button> )}
+            <button onClick={() => setSelectedSlideIndex(slideIndex)} className={`p-1 text-gray-400 hover:text-blue-600 transition-colors ${isSelected ? 'text-blue-600' : ''}`}><Settings size={16} /></button>
+            {!isSpecial && ( <button onClick={handleDelete} className="p-1 text-gray-400 hover:text-red-600 transition-colors"><Trash2 size={16} /></button> )}
           </div>
         </div>
         <div ref={setNodeRef} className="space-y-4 min-h-[100px] p-4 bg-white rounded-md">
