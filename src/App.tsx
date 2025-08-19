@@ -5,8 +5,8 @@ import DragOverlayContent from './components/shared/DragOverlayContent';
 import BuilderView from './views/BuilderView';
 import LivePreview from './views/LivePreview';
 import JsonOutputView from './views/JsonOutputView';
-import useFormStore from './store/formStore'; 
-import { Save, FolderUp } from 'lucide-react';
+import useFormStore, { useTemporalStore } from './store/formStore';
+import { Save, FolderUp, Undo2, Redo2 } from 'lucide-react';
 import { Toaster, toast } from 'react-hot-toast';
 
 type ActiveTab = 'builder' | 'preview' | 'json';
@@ -16,9 +16,13 @@ function App() {
   const [activeDragItem, setActiveDragItem] = useState<DragStartEvent['active'] | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('builder');
 
-  
+
   const saveToLocalStorage = useFormStore((state) => state.saveToLocalStorage);
   const setFormDefinition = useFormStore((state) => state.setFormDefinition);
+  
+  const { undo, redo, clear, pastStates, futureStates } = useTemporalStore(
+    (state) => state,
+  );
 
   const handleSave = () => {
     saveToLocalStorage();
@@ -31,6 +35,7 @@ function App() {
         try {
           const loadedDefinition = JSON.parse(savedJson);
           setFormDefinition(loadedDefinition);
+          clear();
           toast.success('Form loaded successfully!');
         } catch (error) {
           toast.error('Could not load form. Data may be corrupted.');
@@ -80,22 +85,13 @@ function App() {
             <TabButton tab="json" label="Export JSON" />
           </div>
 
-          
+
           <div className="flex items-center gap-2 mb-1">
-            <button 
-              onClick={handleLoad}
-              className="flex items-center gap-2 px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              <FolderUp size={14} />
-              Load
-            </button>
-            <button 
-              onClick={handleSave}
-              className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
-            >
-              <Save size={14} />
-              Save
-            </button>
+            <button onClick={ () => undo() } disabled={pastStates.length === 0} className="p-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Undo"> <Undo2 size={14} /> </button>
+            <button onClick={() => redo()} disabled={futureStates.length === 0} className="p-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Redo"> <Redo2 size={14} /> </button>
+            <div className="w-px h-6 bg-gray-300 mx-1"></div>
+            <button onClick={handleLoad} className="flex items-center gap-2 px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50"><FolderUp size={14} />Load</button>
+            <button onClick={handleSave} className="flex items-center gap-2 px-3 py-1 text-sm bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"><Save size={14} />Save</button>
           </div>
         </header>
 
