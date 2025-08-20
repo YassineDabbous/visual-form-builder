@@ -1,4 +1,7 @@
-module.exports = {
+import type { Config } from "tailwindcss";
+
+
+const config: Config = {
   // ...
   theme: {
     extend: {
@@ -9,9 +12,12 @@ module.exports = {
         },
       },
       animation: {
-        'fade-in': 'fade-in 0.3s ease-out',
+        'fade-in': 'fade-in 0.5s ease-out',
       },
     },
   },
   // ...
 };
+
+
+export default config;
