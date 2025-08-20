@@ -8,12 +8,18 @@ import { useStoreWithEqualityFn } from "zustand/traditional";
 
 const LOCAL_STORAGE_KEY = "formsmd_builder_save";
 
+export interface ExamValidationError {
+  elementId: string;
+  message: string;
+}
 interface FormState {
   formDefinition: FormDefinition;
   selectedElementId: string | null;
   selectedSlideIndex: number | null | "start" | "end";
+  examValidationErrors: ExamValidationError[];
 
   setFormDefinition: (definition: FormDefinition) => void;
+  setExamValidationErrors: (errors: ExamValidationError[]) => void;
   saveToLocalStorage: () => void;
 
   setSelectedElementId: (id: string | null) => void;
@@ -67,6 +73,8 @@ const useFormStore = create(
       },
       selectedElementId: null,
       selectedSlideIndex: null,
+      examValidationErrors: [],
+      setExamValidationErrors: (errors) => set({ examValidationErrors: errors }),
 
       // --- ACTIONS ---
       setSelectedElementId: (id) =>

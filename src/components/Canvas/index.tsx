@@ -1,5 +1,3 @@
-// src/components/Canvas/index.tsx
-
 import React from 'react';
 import useFormStore from '../../store/formStore';
 import FormElementDisplay from './FormElementDisplay';
@@ -8,6 +6,7 @@ import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Trash2, Settings, PlayCircle, StopCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { AlertTriangle } from 'lucide-react';
 
 const ConfirmationToast = ({
   toastId,
@@ -45,6 +44,8 @@ const SortableFormElement = ({ element, slideIndex }: { element: any; slideIndex
     id: element.id,
     data: { element, type: element.type, isCanvasElement: true, slideIndex },
   });
+  const examValidationErrors = useFormStore((state) => state.examValidationErrors);
+  const error = examValidationErrors.find(e => e.elementId === element.id);
 
   const style = { transform: CSS.Transform.toString(transform), transition };
   const selectedElementId = useFormStore((state) => state.selectedElementId);
@@ -63,9 +64,14 @@ const SortableFormElement = ({ element, slideIndex }: { element: any; slideIndex
   };
 
   return (
-    <div ref={setNodeRef} style={style} onClick={() => setSelectedElementId(element.id)} className={`group p-1 rounded-lg transition-all flex items-center gap-2 ${selectedElementId === element.id ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-100'}`}>
+    <div ref={setNodeRef} style={style} onClick={() => setSelectedElementId(element.id)} className={`group p-1 rounded-lg transition-all flex items-center gap-2 ${selectedElementId === element.id ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-100'} ${error ? 'ring-2 ring-red-500' : ''}`}>
       <div {...attributes} {...listeners} className="p-2 cursor-grab touch-none"><GripVertical size={16} className="text-gray-400" /></div>
       <div className="flex-1"><FormElementDisplay element={element} /></div>
+      {error && (
+        <div title={error.message}>
+          <AlertTriangle size={16} className="text-red-600" />
+        </div>
+      )}
       <button onClick={handleDelete} className="p-1 text-gray-400 opacity-0 group-hover:opacity-100 hover:text-red-600 transition-all" aria-label="Delete element"><Trash2 size={16} /></button>
     </div>
   );

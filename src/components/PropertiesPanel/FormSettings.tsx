@@ -74,6 +74,15 @@ const FormSettings = () => {
                 />
               </div>
               
+              <div className="p-3 border rounded-lg bg-white space-y-3">
+                 <BooleanToggle
+                  label="Enable Auto-Correction (Exam Mode)"
+                  description="Enforces strict rules on inputs and adds 'answer' and 'score' fields."
+                  checked={!!formDefinition.settings.isAutoSolvable}
+                  onChange={(e) => handleSettingChange('isAutoSolvable', e.target.checked)}
+                />
+              </div>
+              
             </div>
           )}
 

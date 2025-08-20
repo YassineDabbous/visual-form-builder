@@ -14,6 +14,7 @@ interface InputPropertiesProps {
 const InputProperties = ({ element }: InputPropertiesProps) => {
   const updateElement = useFormStore((state) => state.updateElement);
   const formDefinition = useFormStore((state) => state.formDefinition);
+  const isAutoSolvable = useFormStore((state) => state.formDefinition.settings.isAutoSolvable);
   
   const [isNameValid, setIsNameValid] = useState(true);
 
@@ -56,6 +57,23 @@ const InputProperties = ({ element }: InputPropertiesProps) => {
         onChange={(e) => updateElement(element.id, { [valueProp]: e.target.value })}
         description={element.type === 'file' ? 'URL to an existing file.' : 'Initial value of the input.'}
       />
+      
+      {isAutoSolvable && (
+        <div className="p-3 border rounded-lg bg-green-50 border-green-300 space-y-4">
+          <h3 className="text-sm font-semibold text-green-800">Auto-Correction</h3>
+          <TextInput
+            label="Correct Answer"
+            value={element.answer || ''}
+            onChange={(e) => updateElement(element.id, { answer: e.target.value })}
+          />
+          <TextInput
+            label="Score"
+            type="number"
+            value={element.score ?? ''}
+            onChange={(e) => updateElement(element.id, { score: e.target.value === '' ? undefined : parseFloat(e.target.value) })}
+          />
+        </div>
+      )}
 
       {/* --- Validation --- */}
       <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">

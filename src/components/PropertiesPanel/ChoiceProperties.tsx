@@ -14,6 +14,7 @@ interface ChoicePropertiesProps {
 const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
   const updateElement = useFormStore((state) => state.updateElement);
   const formDefinition = useFormStore((state) => state.formDefinition);
+  const isAutoSolvable = useFormStore((state) => state.formDefinition.settings.isAutoSolvable);
 
   const [isNameValid, setIsNameValid] = useState(true);
 
@@ -110,6 +111,50 @@ const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
             </div>
           </div>
         )}
+
+        
+      {isAutoSolvable && (
+        <div className="p-3 border rounded-lg bg-green-50 border-green-300 space-y-4">
+          <h3 className="text-sm font-semibold text-green-800">Auto-Correction</h3>
+          {element.type === 'select' && (
+            <TextInput
+              label="Correct Answer"
+              value={element.answer || ''}
+              onChange={(e) => updateElement(element.id, { answer: e.target.value })}
+              description="Must match one of the option values."
+            />
+          )}
+          {element.type === 'choice' && (
+             <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Correct Answer(s)</label>
+                <div className="space-y-2 p-3 border rounded-md bg-white">
+                  {choices.map((choice, index) => (
+                    <BooleanToggle
+                      key={index}
+                      label={choice || `(Option ${index + 1})`}
+                      checked={(element.answer || []).includes(choice)}
+                      onChange={(e) => {
+                        let newAnswer = [...(element.answer || [])];
+                        if (e.target.checked) {
+                          if (!newAnswer.includes(choice)) newAnswer.push(choice);
+                        } else {
+                          newAnswer = newAnswer.filter(ans => ans !== choice);
+                        }
+                        updateElement(element.id, { answer: newAnswer.length > 0 ? newAnswer : undefined });
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+          )}
+          <TextInput
+            label="Score"
+            type="number"
+            value={element.score ?? ''}
+            onChange={(e) => updateElement(element.id, { score: e.target.value === '' ? undefined : parseFloat(e.target.value) })}
+          />
+        </div>
+      )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">{element.type === 'select' ? 'Options' : 'Choices'}</label>
