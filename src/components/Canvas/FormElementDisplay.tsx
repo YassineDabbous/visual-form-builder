@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FormElement } from '../../types/form';
 import { Mail, Type, Star, ChevronsUpDown, Calendar, Clock, KeyRound, Hash, Globe, Phone, FileUp} from 'lucide-react';
 
@@ -7,6 +8,7 @@ interface FormElementDisplayProps {
 }
 
 const FormElementDisplay = ({ element }: FormElementDisplayProps) => {
+  const { t } = useTranslation();
   const renderInputPlaceholder = (question: string, placeholder: string, icon: React.ReactNode) => (
     <div className="p-3 bg-white rounded-lg border border-gray-200">
       <label className="text-sm text-gray-600 block mb-1">{question}</label>
@@ -34,31 +36,31 @@ const FormElementDisplay = ({ element }: FormElementDisplayProps) => {
     case 'code': return <pre className="bg-gray-800 text-white p-3 rounded-md text-sm my-2"><code>{element.content}</code></pre>;
 
     // SIMPLE INPUTS
-    case 'text': return renderInputPlaceholder(element.question || 'Text', 'User input...', <Type size={16} />);
-    case 'textarea': return renderInputPlaceholder(element.question || 'Text Area', 'Longer user input...', <Type size={16} />);
-    case 'email': return renderInputPlaceholder(element.question || 'Email', 'name@example.com', <Mail size={16} />);
-    case 'password': return renderInputPlaceholder(element.question || 'Password', '••••••••', <KeyRound size={16} />);
-    case 'number': return renderInputPlaceholder(element.question || 'Number', '123', <Hash size={16} />);
-    case 'url': return renderInputPlaceholder(element.question || 'URL', 'https://example.com', <Globe size={16} />);
-    case 'tel': return renderInputPlaceholder(element.question || 'Telephone', '(555) 123-4567', <Phone size={16} />);
+    case 'text': return renderInputPlaceholder(element.question || t('display_text'), t('display_user_input'), <Type size={16} />);
+    case 'textarea': return renderInputPlaceholder(element.question || t('display_text_area'), t('display_longer_user_input'), <Type size={16} />);
+    case 'email': return renderInputPlaceholder(element.question || t('display_email'), t('display_email_placeholder'), <Mail size={16} />);
+    case 'password': return renderInputPlaceholder(element.question || t('display_password'), t('display_password_placeholder'), <KeyRound size={16} />);
+    case 'number': return renderInputPlaceholder(element.question || t('display_number'), t('display_number_placeholder'), <Hash size={16} />);
+    case 'url': return renderInputPlaceholder(element.question || t('display_url'), t('display_url_placeholder'), <Globe size={16} />);
+    case 'tel': return renderInputPlaceholder(element.question || t('display_telephone'), t('display_telephone_placeholder'), <Phone size={16} />);
     
     // DATE/TIME INPUTS
-    case 'date': return renderInputPlaceholder(element.question || 'Date', 'Select a date', <Calendar size={16} />);
-    case 'time': return renderInputPlaceholder(element.question || 'Time', 'Select a time', <Clock size={16} />);
-    case 'datetime': return renderInputPlaceholder(element.question || 'Date & Time', 'Select date and time', <Calendar size={16} />);
+    case 'date': return renderInputPlaceholder(element.question || t('display_date'), t('display_date_placeholder'), <Calendar size={16} />);
+    case 'time': return renderInputPlaceholder(element.question || t('display_time'), t('display_time_placeholder'), <Clock size={16} />);
+    case 'datetime': return renderInputPlaceholder(element.question || t('display_datetime'), t('display_datetime_placeholder'), <Calendar size={16} />);
 
     // CHOICE-BASED & RATING
-    case 'select': return renderInputPlaceholder(element.question || 'Select', 'Choose an option', <ChevronsUpDown size={16} />);
-    case 'choice': return renderInputPlaceholder(element.question || 'Choice', 'Select one or more', <ChevronsUpDown size={16} />);
-    case 'pictureChoice': return renderInputPlaceholder(element.question || 'Picture Choice', 'Select a picture', <ChevronsUpDown size={16} />);
-    case 'rating': return renderInputPlaceholder(element.question || 'Rating', 'Stars will be shown here', <Star size={16} />);
-    case 'opinionScale': return renderInputPlaceholder(element.question || 'Opinion Scale', 'A scale will be shown', <ChevronsUpDown size={16} />);
+    case 'select': return renderInputPlaceholder(element.question || t('display_select'), t('display_choose_option'), <ChevronsUpDown size={16} />);
+    case 'choice': return renderInputPlaceholder(element.question || t('display_choice'), t('display_select_one_or_more'), <ChevronsUpDown size={16} />);
+    case 'pictureChoice': return renderInputPlaceholder(element.question || t('display_picture_choice'), t('display_select_a_picture'), <ChevronsUpDown size={16} />);
+    case 'rating': return renderInputPlaceholder(element.question || t('display_rating'), t('display_stars_will_be_shown'), <Star size={16} />);
+    case 'opinionScale': return renderInputPlaceholder(element.question || t('display_opinion_scale'), t('display_a_scale_will_be_shown'), <ChevronsUpDown size={16} />);
 
     // FILE
-    case 'file': return renderInputPlaceholder(element.question || 'File Upload', 'No file chosen', <FileUp size={16} />);
+    case 'file': return renderInputPlaceholder(element.question || t('display_file_upload'), t('display_no_file_chosen'), <FileUp size={16} />);
 
     default:
-      return <div className="p-3 bg-red-100 text-red-700 rounded-lg border border-red-300">Unknown Element Type: {element.type}</div>;
+      return <div className="p-3 bg-red-100 text-red-700 rounded-lg border border-red-300">{t('unknown_element_type', { type: element.type })}</div>;
   }
 };
 

@@ -1,3 +1,4 @@
+import { useTranslation, Trans } from 'react-i18next';
 import useFormStore from '../../store/formStore';
 import type { FormElement, FormSlide } from '../../types/form';
 import TextContentProperties from './TextContentProperties';
@@ -11,6 +12,7 @@ import FormSettings from './FormSettings';
 import SlideSettings from './SlideSettings';
 
 const ElementProperties = ({ selectedElement }: { selectedElement: FormElement }) => {
+  const { t } = useTranslation();
   const renderProperties = (element: FormElement) => {
     switch (element.type) {
       case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6':
@@ -31,17 +33,17 @@ const ElementProperties = ({ selectedElement }: { selectedElement: FormElement }
       case 'rating': case 'opinionScale':
         return <ScaleProperties element={element} />;
       default:
-        return <p className="text-sm text-gray-500">No properties editor available for type: <span className="font-semibold">{element.type}</span></p>;
+        return <p className="text-sm text-gray-500"><Trans i18nKey="no_properties_editor" values={{ type: element.type }} components={[<span className="font-semibold" />]} /></p>;
     }
   };
 
   return (
     <aside className="w-80 bg-gray-100 p-4 border-l flex flex-col space-y-4 overflow-y-auto">
       <div>
-        <h2 className="text-lg font-semibold mb-2">Element Properties</h2>
+        <h2 className="text-lg font-semibold mb-2">{t('element_properties')}</h2>
         <div className="text-sm bg-gray-200 p-2 rounded-md">
-          <p className="flex justify-between"><span className="font-semibold">ID:</span> <span className="text-gray-600 truncate ml-2">{selectedElement.id}</span></p>
-          <p className="flex justify-between"><span className="font-semibold">Type:</span> <span className="text-gray-600">{selectedElement.type}</span></p>
+          <p className="flex justify-between"><span className="font-semibold">{t('id')}</span> <span className="text-gray-600 truncate ml-2">{selectedElement.id}</span></p>
+          <p className="flex justify-between"><span className="font-semibold">{t('type')}</span> <span className="text-gray-600">{selectedElement.type}</span></p>
         </div>
       </div>
       <div className="flex-1">

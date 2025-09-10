@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { FormElement } from '../../types/form';
 import useFormStore from '../../store/formStore';
 import { PlusCircle, Trash2 } from 'lucide-react';
@@ -7,6 +8,7 @@ interface ListPropertiesProps {
 }
 
 const ListProperties = ({ element }: ListPropertiesProps) => {
+  const { t } = useTranslation();
   const updateElement = useFormStore((state) => state.updateElement);
   const items: string[] = element.items || [];
 
@@ -30,7 +32,7 @@ const ListProperties = ({ element }: ListPropertiesProps) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">List Items</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{t('list_items')}</label>
         <div className="space-y-2 p-3 border rounded-lg bg-gray-50/50">
           {items.map((item, index) => (
             <div key={index} className="flex items-center gap-2">
@@ -39,7 +41,7 @@ const ListProperties = ({ element }: ListPropertiesProps) => {
                 value={item}
                 onChange={(e) => handleItemChange(index, e.target.value)}
                 className="flex-grow p-2 border border-gray-300 rounded-md shadow-sm"
-                placeholder={`Item ${index + 1}`}
+                placeholder={t('item_n', { index: index + 1 })}
               />
               <button onClick={() => removeItem(index)} className="text-gray-400 hover:text-red-500">
                 <Trash2 size={16} />
@@ -48,7 +50,7 @@ const ListProperties = ({ element }: ListPropertiesProps) => {
           ))}
           <button onClick={addItem} className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800">
             <PlusCircle size={16} />
-            Add Item
+            {t('add_item')}
           </button>
         </div>
       </div>

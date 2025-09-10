@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FormElement } from '../../types/form';
 import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
@@ -8,6 +9,7 @@ interface CodePropertiesProps {
 }
 
 const CodeProperties = ({ element }: CodePropertiesProps) => {
+  const { t } = useTranslation();
   const updateElement = useFormStore((state) => state.updateElement);
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -22,7 +24,7 @@ const CodeProperties = ({ element }: CodePropertiesProps) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Code Content</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('code_content')}</label>
         <textarea
           value={element.content || ''}
           onChange={handleContentChange}
@@ -32,11 +34,11 @@ const CodeProperties = ({ element }: CodePropertiesProps) => {
         />
       </div>
       <TextInput
-        label="Language"
+        label={t('language')}
         value={element.options?.language || ''}
         onChange={handleLanguageChange}
         placeholder="e.g., javascript"
-        description="A hint for syntax highlighting."
+        description={t('syntax_highlighting_hint')}
       />
     </div>
   );

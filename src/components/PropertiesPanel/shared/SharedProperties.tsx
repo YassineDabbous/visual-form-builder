@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FormElement } from '../../../types/form';
 import useFormStore from '../../../store/formStore';
 import TextInput from './TextInput';
@@ -35,41 +36,42 @@ export const BooleanToggle = ({
 );
 
 const SharedProperties = ({ element }: SharedPropertiesProps) => {
+  const { t } = useTranslation();
   const updateElement = useFormStore((state) => state.updateElement);
 
   return (
     <div className="space-y-4 p-3 border rounded-lg bg-gray-50/50">
-      <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Common Options</h3>
+      <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('common_options')}</h3>
       
       <TextInput
-        label="Description"
+        label={t('description')}
         value={element.description || ''}
         onChange={(e) => updateElement(element.id, { description: e.target.value })}
-        placeholder="Helper text below the question..."
+        placeholder={t('helper_text')}
       />
       
       <div className="space-y-3">
         <BooleanToggle
-          label="Required"
-          description="User must fill out this field."
+          label={t('required')}
+          description={t('required_description')}
           checked={element.required || false}
           onChange={(e) => updateElement(element.id, { required: e.target.checked })}
         />
         <BooleanToggle
-          label="Disabled"
-          description="User cannot interact with this field."
+          label={t('disabled')}
+          description={t('disabled_description')}
           checked={element.disabled || false}
           onChange={(e) => updateElement(element.id, { disabled: e.target.checked })}
         />
         <BooleanToggle
-          label="Autofocus"
-          description="Focus this field when the slide loads."
+          label={t('autofocus')}
+          description={t('autofocus_description')}
           checked={element.autofocus || false}
           onChange={(e) => updateElement(element.id, { autofocus: e.target.checked })}
         />
         <BooleanToggle
-          label="Subfield Style"
-          description="Use smaller fonts for question/description."
+          label={t('subfield_style')}
+          description={t('subfield_style_description')}
           checked={element.subfield || false}
           onChange={(e) => updateElement(element.id, { subfield: e.target.checked })}
         />
