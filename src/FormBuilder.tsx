@@ -132,7 +132,7 @@ export const FormBuilder = ({ initialData, onSave, onLoad }: FormBuilderProps) =
           </div>
         </header>
 
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1  overflow-y-auto">
           {activeTab === 'builder' && <BuilderView />}
           {activeTab === 'preview' && <LivePreview />}
           {activeTab === 'json' && <JsonOutputView />}
