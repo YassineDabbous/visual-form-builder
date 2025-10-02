@@ -1,0 +1,1 @@
+{"version":3,"file":"ListProperties.d.ts","sourceRoot":"","sources":["../../../src/components/PropertiesPanel/ListProperties.tsx"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,kBAAkB,CAAC;AAIpD,UAAU,mBAAmB;IAC3B,OAAO,EAAE,WAAW,CAAC;CACtB;AAED,QAAA,MAAM,cAAc,GAAI,aAAa,mBAAmB,4CAiDvD,CAAC;AAEF,eAAe,cAAc,CAAC"}

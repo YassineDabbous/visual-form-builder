@@ -1,0 +1,1 @@
+{"version":3,"file":"ScaleProperties.d.ts","sourceRoot":"","sources":["../../../src/components/PropertiesPanel/ScaleProperties.tsx"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,kBAAkB,CAAC;AAiBpD,UAAU,oBAAoB;IAC5B,OAAO,EAAE,WAAW,CAAC;CACtB;AAED,QAAA,MAAM,eAAe,GAAI,aAAa,oBAAoB,4CA6FzD,CAAC;AAEF,eAAe,eAAe,CAAC"}

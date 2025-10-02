@@ -1,0 +1,1 @@
+{"version":3,"file":"InputProperties.d.ts","sourceRoot":"","sources":["../../../src/components/PropertiesPanel/InputProperties.tsx"],"names":[],"mappings":"AAKA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,kBAAkB,CAAC;AAKpD,UAAU,oBAAoB;IAC5B,OAAO,EAAE,WAAW,CAAC;CACtB;AAED,QAAA,MAAM,eAAe,GAAI,aAAa,oBAAoB,4CAgKzD,CAAC;AAEF,eAAe,eAAe,CAAC"}

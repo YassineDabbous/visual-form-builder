@@ -1,0 +1,1 @@
+{"version":3,"file":"PictureChoiceProperties.d.ts","sourceRoot":"","sources":["../../../src/components/PropertiesPanel/PictureChoiceProperties.tsx"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,kBAAkB,CAAC;AAcpD,UAAU,4BAA4B;IACpC,OAAO,EAAE,WAAW,CAAC;CACtB;AAED,QAAA,MAAM,uBAAuB,GAAI,aAAa,4BAA4B,4CA+GzE,CAAC;AAEF,eAAe,uBAAuB,CAAC"}

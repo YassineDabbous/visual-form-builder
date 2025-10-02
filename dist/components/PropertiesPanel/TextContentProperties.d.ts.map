@@ -1,0 +1,1 @@
+{"version":3,"file":"TextContentProperties.d.ts","sourceRoot":"","sources":["../../../src/components/PropertiesPanel/TextContentProperties.tsx"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,kBAAkB,CAAC;AAIpD,UAAU,0BAA0B;IAClC,OAAO,EAAE,WAAW,CAAC;CACtB;AAED,QAAA,MAAM,qBAAqB,GAAI,aAAa,0BAA0B,4CAkDrE,CAAC;AAEF,eAAe,qBAAqB,CAAC"}

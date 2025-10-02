@@ -1,0 +1,1 @@
+{"version":3,"file":"CodeProperties.d.ts","sourceRoot":"","sources":["../../../src/components/PropertiesPanel/CodeProperties.tsx"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,kBAAkB,CAAC;AAIpD,UAAU,mBAAmB;IAC3B,OAAO,EAAE,WAAW,CAAC;CACtB;AAED,QAAA,MAAM,cAAc,GAAI,aAAa,mBAAmB,4CAkCvD,CAAC;AAEF,eAAe,cAAc,CAAC"}

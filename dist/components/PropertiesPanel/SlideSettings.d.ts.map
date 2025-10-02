@@ -1,0 +1,1 @@
+{"version":3,"file":"SlideSettings.d.ts","sourceRoot":"","sources":["../../../src/components/PropertiesPanel/SlideSettings.tsx"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,SAAS,EAAE,MAAM,kBAAkB,CAAC;AAIlD,UAAU,kBAAkB;IAC1B,KAAK,EAAE,SAAS,CAAC;IACjB,UAAU,EAAE,MAAM,GAAG,OAAO,GAAG,KAAK,CAAC;CACtC;AAED,QAAA,MAAM,aAAa,GAAI,uBAAuB,kBAAkB,4CAwG/D,CAAC;AAEF,eAAe,aAAa,CAAC"}

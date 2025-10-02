@@ -1,0 +1,1 @@
+{"version":3,"file":"ChoiceProperties.d.ts","sourceRoot":"","sources":["../../../src/components/PropertiesPanel/ChoiceProperties.tsx"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,kBAAkB,CAAC;AAQpD,UAAU,qBAAqB;IAC7B,OAAO,EAAE,WAAW,CAAC;CACtB;AAED,QAAA,MAAM,gBAAgB,GAAI,aAAa,qBAAqB,4CAyK3D,CAAC;AAEF,eAAe,gBAAgB,CAAC"}
