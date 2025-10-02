@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
 import type { FormSlide } from '../../types/form';
@@ -10,6 +11,7 @@ interface SlideSettingsProps {
 }
 
 const SlideSettings = ({ slide, slideIndex }: SlideSettingsProps) => {
+  const { t } = useTranslation();
   const updateSlideSettings = useFormStore((state) => state.updateSlideSettings);
   const slideOptions = slide.slideOptions || {};
 
@@ -19,9 +21,9 @@ const SlideSettings = ({ slide, slideIndex }: SlideSettingsProps) => {
   };
 
   const getTitle = () => {
-    if (slideIndex === 'start') return "Start Slide Settings";
-    if (slideIndex === 'end') return "End Slide Settings";
-    return `Slide ${slideIndex + 1} Settings`;
+    if (slideIndex === 'start') return t('start_slide_settings');
+    if (slideIndex === 'end') return t('end_slide_settings');
+    return t('slide_settings', { number: slideIndex + 1 });
   };
 
   return (
@@ -33,38 +35,38 @@ const SlideSettings = ({ slide, slideIndex }: SlideSettingsProps) => {
           {/* Settings for all slides EXCEPT start/end */}
           {typeof slideIndex === 'number' && (
             <div className="p-3 border rounded-lg bg-white space-y-4">
-              <h3 className="text-sm font-semibold text-gray-700">Logic & Progress</h3>
+              <h3 className="text-sm font-semibold text-gray-700">{t('logic_progress')}</h3>
               <TextInput
-                label="Jump Condition"
+                label={t('jump_condition')}
                 value={slideOptions.jumpCondition || ''}
                 onChange={(e) => handleChange('jumpCondition', e.target.value)}
-                description="e.g., field_name == 'value'"
+                description={t('jump_condition_placeholder')}
               />
               <TextInput
-                label="Page Progress"
+                label={t('page_progress')}
                 value={slideOptions.pageProgress || ''}
                 onChange={(e) => handleChange('pageProgress', e.target.value)}
-                description="e.g., 50% or 2/4"
+                description={t('page_progress_placeholder')}
               />
                <SelectInput
-                label="Button Alignment"
+                label={t('button_alignment')}
                 value={slideOptions.buttonAlignment || ''}
                 onChange={(e) => handleChange('buttonAlignment', e.target.value)}
               >
-                <option value="">Default</option>
-                <option value="start">Start</option>
-                <option value="center">Center</option>
-                <option value="end">End</option>
-                <option value="stretch">Stretch</option>
+                <option value="">{t('default')}</option>
+                <option value="start">{t('start')}</option>
+                <option value="center">{t('center')}</option>
+                <option value="end">{t('end')}</option>
+                <option value="stretch">{t('stretch')}</option>
               </SelectInput>
               <BooleanToggle
-                label="Partial Post"
-                description="Post form data up to this slide."
+                label={t('partial_post')}
+                description={t('partial_post_description')}
                 checked={slideOptions.post || false}
                 onChange={(e) => handleChange('post', e.target.checked)}
               />
               <BooleanToggle
-                label="Disable Previous Button"
+                label={t('disable_previous_button')}
                 checked={slideOptions.disablePrevious || false}
                 onChange={(e) => handleChange('disablePrevious', e.target.checked)}
               />
@@ -74,23 +76,23 @@ const SlideSettings = ({ slide, slideIndex }: SlideSettingsProps) => {
           {/* --- SETTINGS FOR START SLIDE --- */}
           {slideIndex === 'start' && (
             <div className="p-3 border rounded-lg bg-white space-y-4">
-               <h3 className="text-sm font-semibold text-gray-700">Start Slide Options</h3>
+               <h3 className="text-sm font-semibold text-gray-700">{t('start_slide_options')}</h3>
                <TextInput
-                label="Button Text"
+                label={t('button_text')}
                 value={slideOptions.buttonText || ''}
                 onChange={(e) => handleChange('buttonText', e.target.value)}
-                placeholder="Start"
+                placeholder={t('start')}
               />
               <SelectInput
-                label="Button Alignment"
+                label={t('button_alignment')}
                 value={slideOptions.buttonAlignment || ''}
                 onChange={(e) => handleChange('buttonAlignment', e.target.value)}
               >
-                <option value="">Default</option>
-                <option value="start">Start</option>
-                <option value="center">Center</option>
-                <option value="end">End</option>
-                <option value="stretch">Stretch</option>
+                <option value="">{t('default')}</option>
+                <option value="start">{t('start')}</option>
+                <option value="center">{t('center')}</option>
+                <option value="end">{t('end')}</option>
+                <option value="stretch">{t('stretch')}</option>
               </SelectInput>
             </div>
           )}
@@ -98,12 +100,12 @@ const SlideSettings = ({ slide, slideIndex }: SlideSettingsProps) => {
            {/* --- SETTINGS FOR END SLIDE --- */}
           {slideIndex === 'end' && (
             <div className="p-3 border rounded-lg bg-white space-y-4">
-               <h3 className="text-sm font-semibold text-gray-700">End Slide Options</h3>
+               <h3 className="text-sm font-semibold text-gray-700">{t('end_slide_options')}</h3>
                <TextInput
-                label="Redirect URL"
+                label={t('redirect_url')}
                 value={slideOptions.redirectUrl || ''}
                 onChange={(e) => handleChange('redirectUrl', e.target.value)}
-                placeholder="https://example.com/thank-you"
+                placeholder={t('redirect_url_placeholder')}
               />
             </div>
           )}

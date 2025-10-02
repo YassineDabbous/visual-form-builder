@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FormElement } from '../../types/form';
 import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
@@ -21,6 +22,7 @@ interface ScalePropertiesProps {
 }
 
 const ScaleProperties = ({ element }: ScalePropertiesProps) => {
+  const { t } = useTranslation();
   const updateElement = useFormStore((state) => state.updateElement);
   const formDefinition = useFormStore((state) => state.formDefinition);
 
@@ -54,23 +56,23 @@ const ScaleProperties = ({ element }: ScalePropertiesProps) => {
   return (
     <div className="space-y-4">
       <TextInput
-        label="Question"
+        label={t('question')}
         value={element.question || ''}
         onChange={(e) => updateElement(element.id, { question: e.target.value })}
       />
 
       <div>
         <TextInput
-          label="Name / ID"
+          label={t('name_id')}
           value={element.name || ''}
           onChange={handleNameChange}
           className={`w-full p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!isNameValid ? 'border-red-500' : 'border-gray-300'}`}
         />
-        {!isNameValid && <p className="text-xs text-red-600 mt-1">This name is already in use.</p>}
+        {!isNameValid && <p className="text-xs text-red-600 mt-1">{t('name_in_use')}</p>}
       </div>
 
       <TextInput
-        label="Default Value"
+        label={t('default_value')}
         type="number"
         value={element.value ?? ''}
         onChange={(e) => handleNumberChange('value', e.target.value)}
@@ -78,33 +80,33 @@ const ScaleProperties = ({ element }: ScalePropertiesProps) => {
 
       {isRating && (
         <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
-          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Rating Options</h3>
-          <TextInput label="Number of Icons (outOf)" type="number" value={element.outOf ?? ''} onChange={(e) => handleNumberChange('outOf', e.target.value)} />
-          <SelectInput label="Icon Style" value={element.icon || 'star'} onChange={(e) => updateElement(element.id, { icon: e.target.value })}>
-            <option value="star">Star</option>
-            <option value="heart">Heart</option>
+          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('rating_options')}</h3>
+          <TextInput label={t('number_of_icons')} type="number" value={element.outOf ?? ''} onChange={(e) => handleNumberChange('outOf', e.target.value)} />
+          <SelectInput label={t('icon_style')} value={element.icon || 'star'} onChange={(e) => updateElement(element.id, { icon: e.target.value })}>
+            <option value="star">{t('star')}</option>
+            <option value="heart">{t('heart')}</option>
           </SelectInput>
-           <BooleanToggle label="Hide numeric labels" checked={element.hideLabels || false} onChange={(e) => updateElement(element.id, { hideLabels: e.target.checked })} />
+           <BooleanToggle label={t('hide_numeric_labels')} checked={element.hideLabels || false} onChange={(e) => updateElement(element.id, { hideLabels: e.target.checked })} />
         </div>
       )}
 
       {isOpinion && (
         <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
-          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Opinion Scale Options</h3>
+          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('opinion_scale_options')}</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <TextInput label="Starts At (0 or 1)" type="number" value={element.startAt ?? ''} onChange={(e) => handleNumberChange('startAt', e.target.value)} className={`w-full p-2 border rounded-md shadow-sm ${errors.startAt ? 'border-red-500' : 'border-gray-300'}`} />
-              {errors.startAt && <p className="text-xs text-red-600 mt-1">{errors.startAt}</p>}
+              <TextInput label={t('starts_at')} type="number" value={element.startAt ?? ''} onChange={(e) => handleNumberChange('startAt', e.target.value)} className={`w-full p-2 border rounded-md shadow-sm ${errors.startAt ? 'border-red-500' : 'border-gray-300'}`} />
+              {errors.startAt && <p className="text-xs text-red-600 mt-1">{t('must_be_0_or_1')}</p>}
             </div>
             <div>
-              <TextInput label="Ends At (5-10)" type="number" value={element.outOf ?? ''} onChange={(e) => handleNumberChange('outOf', e.target.value)} className={`w-full p-2 border rounded-md shadow-sm ${errors.outOf ? 'border-red-500' : 'border-gray-300'}`} />
-              {errors.outOf && <p className="text-xs text-red-600 mt-1">{errors.outOf}</p>}
+              <TextInput label={t('ends_at')} type="number" value={element.outOf ?? ''} onChange={(e) => handleNumberChange('outOf', e.target.value)} className={`w-full p-2 border rounded-md shadow-sm ${errors.outOf ? 'border-red-500' : 'border-gray-300'}`} />
+              {errors.outOf && <p className="text-xs text-red-600 mt-1">{t('must_be_between_5_and_10')}</p>}
             </div>
           </div>
-          <TextInput label="Start Label (labelStart)" value={element.labelStart || ''} onChange={(e) => updateElement(element.id, { labelStart: e.target.value })} />
-          <TextInput label="End Label (labelEnd)" value={element.labelEnd || ''} onChange={(e) => updateElement(element.id, { labelEnd: e.target.value })} />
-          <BooleanToggle label="Hide Start Label" checked={element.hideLabelStart || false} onChange={(e) => updateElement(element.id, { hideLabelStart: e.target.checked })} />
-          <BooleanToggle label="Hide End Label" checked={element.hideLabelEnd || false} onChange={(e) => updateElement(element.id, { hideLabelEnd: e.target.checked })} />
+          <TextInput label={t('start_label')} value={element.labelStart || ''} onChange={(e) => updateElement(element.id, { labelStart: e.target.value })} />
+          <TextInput label={t('end_label')} value={element.labelEnd || ''} onChange={(e) => updateElement(element.id, { labelEnd: e.target.value })} />
+          <BooleanToggle label={t('hide_start_label')} checked={element.hideLabelStart || false} onChange={(e) => updateElement(element.id, { hideLabelStart: e.target.checked })} />
+          <BooleanToggle label={t('hide_end_label')} checked={element.hideLabelEnd || false} onChange={(e) => updateElement(element.id, { hideLabelEnd: e.target.checked })} />
         </div>
       )}
 

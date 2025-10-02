@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FormElement } from '../../types/form';
 import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
@@ -12,6 +13,7 @@ interface ChoicePropertiesProps {
 }
 
 const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
+  const { t } = useTranslation();
   const updateElement = useFormStore((state) => state.updateElement);
   const formDefinition = useFormStore((state) => state.formDefinition);
   const isAutoSolvable = useFormStore((state) => state.formDefinition.settings.isAutoSolvable);
@@ -65,49 +67,49 @@ const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
   return (
     <div className="space-y-4">
       <TextInput
-        label="Question"
+        label={t('question')}
         value={element.question || ''}
         onChange={handleQuestionChange}
       />
 
       <div>
         <TextInput
-          label="Name / ID"
+          label={t('name_id')}
           value={element.name || ''}
           onChange={handleNameChange}
           className={`w-full p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!isNameValid ? 'border-red-500' : 'border-gray-300'}`}
         />
-        {!isNameValid && <p className="text-xs text-red-600 mt-1">This name is already in use.</p>}
+        {!isNameValid && <p className="text-xs text-red-600 mt-1">{t('name_in_use')}</p>}
       </div>
       
       <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
-        <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Choice Options</h3>
+        <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('choice_options')}</h3>
 
         {element.type === 'select' && (
           <TextInput
-            label="Default Selected Value"
+            label={t('default_selected_value')}
             value={element.selected || ''}
             onChange={(e) => updateElement(element.id, { selected: e.target.value })}
-            description="Must match one of the option values exactly."
+            description={t('must_match_option')}
           />
         )}
         
         {element.type === 'choice' && (
           <div className="space-y-3">
-            <BooleanToggle label="Allow multiple selections" checked={element.multiple || false} onChange={(e) => updateElement(element.id, { multiple: e.target.checked })} />
-            <BooleanToggle label="Display horizontally" checked={element.horizontal || false} onChange={(e) => updateElement(element.id, { horizontal: e.target.checked })} />
-            <BooleanToggle label="Hide form text" description="Hides 'Choose as many as you like' text." checked={element.hideFormText || false} onChange={(e) => updateElement(element.id, { hideFormText: e.target.checked })} />
+            <BooleanToggle label={t('allow_multiple_selections')} checked={element.multiple || false} onChange={(e) => updateElement(element.id, { multiple: e.target.checked })} />
+            <BooleanToggle label={t('display_horizontally')} checked={element.horizontal || false} onChange={(e) => updateElement(element.id, { horizontal: e.target.checked })} />
+            <BooleanToggle label={t('hide_form_text')} description={t('hide_form_text_description')} checked={element.hideFormText || false} onChange={(e) => updateElement(element.id, { hideFormText: e.target.checked })} />
           </div>
         )}
         
         {element.type === 'choice' && element.multiple && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Default Selections</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t('default_selections')}</label>
             <div className="space-y-2 p-3 border rounded-md bg-white">
               {choices.map((choice, index) => (
-                <BooleanToggle key={index} label={choice || `(Option ${index + 1})`} checked={checkedValues.includes(choice)} onChange={(e) => handleDefaultCheckedChange(choice, e.target.checked)} />
+                <BooleanToggle key={index} label={choice || t('option_n', { index: index + 1 })} checked={checkedValues.includes(choice)} onChange={(e) => handleDefaultCheckedChange(choice, e.target.checked)} />
               ))}
-              {choices.length === 0 && <p className="text-xs text-gray-400">Add choices to set defaults.</p>}
+              {choices.length === 0 && <p className="text-xs text-gray-400">{t('add_choices_to_set_defaults')}</p>}
             </div>
           </div>
         )}
@@ -115,23 +117,23 @@ const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
         
       {isAutoSolvable && (
         <div className="p-3 border rounded-lg bg-green-50 border-green-300 space-y-4">
-          <h3 className="text-sm font-semibold text-green-800">Auto-Correction</h3>
+          <h3 className="text-sm font-semibold text-green-800">{t('auto_correction')}</h3>
           {element.type === 'select' && (
             <TextInput
-              label="Correct Answer"
+              label={t('correct_answer')}
               value={element.answer || ''}
               onChange={(e) => updateElement(element.id, { answer: e.target.value })}
-              description="Must match one of the option values."
+              description={t('must_match_one_option')}
             />
           )}
           {element.type === 'choice' && (
              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Correct Answer(s)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('correct_answers')}</label>
                 <div className="space-y-2 p-3 border rounded-md bg-white">
                   {choices.map((choice, index) => (
                     <BooleanToggle
                       key={index}
-                      label={choice || `(Option ${index + 1})`}
+                      label={choice || t('option_n', { index: index + 1 })}
                       checked={(element.answer || []).includes(choice)}
                       onChange={(e) => {
                         let newAnswer = [...(element.answer || [])];
@@ -148,7 +150,7 @@ const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
               </div>
           )}
           <TextInput
-            label="Score"
+            label={t('score')}
             type="number"
             value={element.score ?? ''}
             onChange={(e) => updateElement(element.id, { score: e.target.value === '' ? undefined : parseFloat(e.target.value) })}
@@ -157,11 +159,11 @@ const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
       )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">{element.type === 'select' ? 'Options' : 'Choices'}</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{element.type === 'select' ? t('options') : t('choices')}</label>
           <div className="space-y-2">
             {choices.map((choice: string, index: number) => (
               <div key={index} className="flex items-center gap-2">
-                <input type="text" value={choice} onChange={(e) => handleChoiceChange(index, e.target.value)} className="flex-grow p-2 border border-gray-300 rounded-md shadow-sm" placeholder={`Option ${index + 1}`} />
+                <input type="text" value={choice} onChange={(e) => handleChoiceChange(index, e.target.value)} className="flex-grow p-2 border border-gray-300 rounded-md shadow-sm" placeholder={t('option_n', { index: index + 1 })} />
                 <button onClick={() => removeChoice(index)} className="text-gray-400 hover:text-red-500">
                   <Trash2 size={16} />
                 </button>
@@ -169,7 +171,7 @@ const ChoiceProperties = ({ element }: ChoicePropertiesProps) => {
             ))}
             <button onClick={addChoice} className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800">
               <PlusCircle size={16} />
-              Add Option
+              {t('add_option')}
             </button>
           </div>
         </div>

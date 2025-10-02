@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
 import { isNameUnique } from '../../lib/validation'; 
@@ -12,6 +13,7 @@ interface InputPropertiesProps {
 }
 
 const InputProperties = ({ element }: InputPropertiesProps) => {
+  const { t } = useTranslation();
   const updateElement = useFormStore((state) => state.updateElement);
   const formDefinition = useFormStore((state) => state.formDefinition);
   const isAutoSolvable = useFormStore((state) => state.formDefinition.settings.isAutoSolvable);
@@ -38,36 +40,36 @@ const InputProperties = ({ element }: InputPropertiesProps) => {
     <div className="space-y-4">
       {/* --- General Settings --- */}
       <TextInput
-        label="Question"
+        label={t('question')}
         value={element.question || ''}
         onChange={(e) => updateElement(element.id, { question: e.target.value })}
       />
       <div>
-        <TextInput label="Name / ID" value={element.name || ''} onChange={handleNameChange} className={`w-full p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!isNameValid ? 'border-red-500' : 'border-gray-300'}`} />
-        {!isNameValid && <p className="text-xs text-red-600 mt-1">This name is already in use.</p>}
+        <TextInput label={t('name_id')} value={element.name || ''} onChange={handleNameChange} className={`w-full p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${!isNameValid ? 'border-red-500' : 'border-gray-300'}`} />
+        {!isNameValid && <p className="text-xs text-red-600 mt-1">{t('name_in_use')}</p>}
       </div>
       <TextInput
-        label="Placeholder"
+        label={t('placeholder')}
         value={element.placeholder || ''}
         onChange={(e) => updateElement(element.id, { placeholder: e.target.value })}
       />
       <TextInput
-        label="Default Value"
+        label={t('default_value')}
         value={element[valueProp] || ''}
         onChange={(e) => updateElement(element.id, { [valueProp]: e.target.value })}
-        description={element.type === 'file' ? 'URL to an existing file.' : 'Initial value of the input.'}
+        description={t(element.type === 'file' ? 'url_to_file' : 'initial_value_of_input')}
       />
       
       {isAutoSolvable && (
         <div className="p-3 border rounded-lg bg-green-50 border-green-300 space-y-4">
-          <h3 className="text-sm font-semibold text-green-800">Auto-Correction</h3>
+          <h3 className="text-sm font-semibold text-green-800">{t('auto_correction')}</h3>
           <TextInput
-            label="Correct Answer"
+            label={t('correct_answer')}
             value={element.answer || ''}
             onChange={(e) => updateElement(element.id, { answer: e.target.value })}
           />
           <TextInput
-            label="Score"
+            label={t('score')}
             type="number"
             value={element.score ?? ''}
             onChange={(e) => updateElement(element.id, { score: e.target.value === '' ? undefined : parseFloat(e.target.value) })}
@@ -77,16 +79,16 @@ const InputProperties = ({ element }: InputPropertiesProps) => {
 
       {/* --- Validation --- */}
       <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
-        <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Validation</h3>
+        <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('validation')}</h3>
         <TextInput
-          label="Validation Pattern (Regex)"
+          label={t('validation_pattern')}
           value={element.pattern || ''}
           onChange={(e) => updateElement(element.id, { pattern: e.target.value })}
           placeholder="e.g., ^[A-Za-z]+$"
         />
         {['text', 'email', 'url', 'tel', 'password'].includes(element.type) && (
             <TextInput
-            label="Max Length"
+            label={t('max_length')}
             type="number"
             value={element.maxlength ?? ''}
             onChange={(e) => handleNumberChange('maxlength', e.target.value)}
@@ -96,16 +98,16 @@ const InputProperties = ({ element }: InputPropertiesProps) => {
 
       {/* --- Appearance --- */}
       <div className="p-3 border rounded-lg bg-gray-50/50 space-y-3">
-        <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Appearance</h3>
+        <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('appearance')}</h3>
         <BooleanToggle
-          label="Small Field Size"
-          description="Use smaller fonts for question and input."
+          label={t('small_field_size')}
+          description={t('small_field_size_description')}
           checked={element.fieldSize === 'sm'}
           onChange={(e) => updateElement(element.id, { fieldSize: e.target.checked ? 'sm' : undefined })}
         />
         <BooleanToggle
-          label="Classic Label Style"
-          description="Use smaller fonts for question and description."
+          label={t('classic_label_style')}
+          description={t('classic_label_style_description')}
           checked={element.labelStyle === 'classic'}
           onChange={(e) => updateElement(element.id, { labelStyle: e.target.checked ? 'classic' : undefined })}
         />
@@ -114,51 +116,51 @@ const InputProperties = ({ element }: InputPropertiesProps) => {
       {/* --- Type-Specific Settings --- */}
       {element.type === 'number' && (
         <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
-          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Number Options</h3>
+          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('number_options')}</h3>
           <div className="grid grid-cols-2 gap-4">
-            <TextInput label="Min" type="number" value={element.min ?? ''} onChange={(e) => handleNumberChange('min', e.target.value)} />
-            <TextInput label="Max" type="number" value={element.max ?? ''} onChange={(e) => handleNumberChange('max', e.target.value)} />
-            <TextInput label="Step" type="number" value={element.step ?? ''} onChange={(e) => handleNumberChange('step', e.target.value)} />
+            <TextInput label={t('min')} type="number" value={element.min ?? ''} onChange={(e) => handleNumberChange('min', e.target.value)} />
+            <TextInput label={t('max')} type="number" value={element.max ?? ''} onChange={(e) => handleNumberChange('max', e.target.value)} />
+            <TextInput label={t('step')} type="number" value={element.step ?? ''} onChange={(e) => handleNumberChange('step', e.target.value)} />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <TextInput label="Unit (Prefix)" value={element.unit || ''} onChange={(e) => updateElement(element.id, { unit: e.target.value })} placeholder="$" />
-            <TextInput label="Unit (Suffix)" value={element.unitEnd || ''} onChange={(e) => updateElement(element.id, { unitEnd: e.target.value })} placeholder="kg" />
+            <TextInput label={t('unit_prefix')} value={element.unit || ''} onChange={(e) => updateElement(element.id, { unit: e.target.value })} placeholder="$" />
+            <TextInput label={t('unit_suffix')} value={element.unitEnd || ''} onChange={(e) => updateElement(element.id, { unitEnd: e.target.value })} placeholder="kg" />
           </div>
         </div>
       )}
 
       {element.type === 'tel' && (
         <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
-          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Telephone Options</h3>
+          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('telephone_options')}</h3>
            <TextInput
-            label="Default Country"
+            label={t('default_country')}
             value={element.country || ''}
             onChange={(e) => updateElement(element.id, { country: e.target.value.toUpperCase() })}
             placeholder="US"
-            description="ISO alpha-2 country code."
+            description={t('iso_alpha_2')}
           />
           <TagsInput
-            label="Available Countries"
+            label={t('available_countries')}
             tags={element.availableCountries || []}
             onTagsChange={(newTags) => updateElement(element.id, { availableCountries: newTags.length > 0 ? newTags : undefined })}
-            placeholder="Add country and press Enter..."
-            description="ISO alpha-2 codes. e.g., US, CA, GB"
+            placeholder={t('add_country_placeholder')}
+            description={t('iso_alpha_2_example')}
           />
         </div>
       )}
 
       {element.type === 'file' && (
         <div className="p-3 border rounded-lg bg-gray-50/50 space-y-4">
-          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">File Options</h3>
+          <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('file_options')}</h3>
            <TextInput
-            label="Size Limit (MB)"
+            label={t('size_limit_mb')}
             type="number"
             value={element.sizeLimit ?? ''}
             onChange={(e) => handleNumberChange('sizeLimit', e.target.value)}
           />
           <BooleanToggle
-            label="Images Only"
-            description="Accept only image file types."
+            label={t('images_only')}
+            description={t('images_only_description')}
             checked={element.imageOnly || false}
             onChange={(e) => updateElement(element.id, { imageOnly: e.target.checked })}
           />

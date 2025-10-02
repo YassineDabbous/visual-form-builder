@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
 import { SelectInput } from './shared/SelectInput';
@@ -7,6 +8,7 @@ import { BooleanToggle } from './shared/SharedProperties';
 type SettingsTab = 'general' | 'appearance' | 'behavior' | 'submission' | 'advanced';
 
 const FormSettings = () => {
+  const { t } = useTranslation();
   const formDefinition = useFormStore((state) => state.formDefinition);
   const updateFormSettings = useFormStore((state) => state.updateFormSettings);
   const toggleStartSlide = useFormStore((state) => state.toggleStartSlide);
@@ -40,35 +42,35 @@ const FormSettings = () => {
   return (
     <aside className="w-80 bg-gray-100 p-4 border-l flex flex-col space-y-4 overflow-y-auto">
       <div>
-        <h2 className="text-lg font-semibold mb-4">Form Settings</h2>
+        <h2 className="text-lg font-semibold mb-4">{t('form_settings')}</h2>
         <div className="flex flex-wrap items-center gap-2 mb-4 border-b pb-2">
-          <TabButton tab="general" label="General" />
-          <TabButton tab="appearance" label="Appearance" />
-          <TabButton tab="behavior" label="Behavior" />
-          <TabButton tab="submission" label="Submission" />
-          <TabButton tab="advanced" label="Advanced" />
+          <TabButton tab="general" label={t('general')} />
+          <TabButton tab="appearance" label={t('appearance')} />
+          <TabButton tab="behavior" label={t('behavior')} />
+          <TabButton tab="submission" label={t('submission')} />
+          <TabButton tab="advanced" label={t('advanced')} />
         </div>
         <div className="space-y-4">
 
           {activeTab === 'general' && (
             <div className="space-y-4 animate-fade-in">
-              <TextInput label="Form ID" value={formDefinition.settings.id || ''} onChange={(e) => handleSettingChange('id', e.target.value)} />
-              <SelectInput label="Text Direction (dir)" value={formDefinition.settings.dir || 'ltr'} onChange={(e) => handleSettingChange('dir', e.target.value)}>
-                <option value="ltr">Left-to-Right</option>
-                <option value="rtl">Right-to-Left</option>
+              <TextInput label={t('form_id')} value={formDefinition.settings.id || ''} onChange={(e) => handleSettingChange('id', e.target.value)} />
+              <SelectInput label={t('text_direction')} value={formDefinition.settings.dir || 'ltr'} onChange={(e) => handleSettingChange('dir', e.target.value)}>
+                <option value="ltr">{t('ltr')}</option>
+                <option value="rtl">{t('rtl')}</option>
               </SelectInput>
-               <TextInput label="Language (localization)" value={formDefinition.settings.localization || ''} onChange={(e) => handleSettingChange('localization', e.target.value)} placeholder="en" />
+               <TextInput label={t('language_localization')} value={formDefinition.settings.localization || ''} onChange={(e) => handleSettingChange('localization', e.target.value)} placeholder="en" />
                 
               <div className="p-3 border rounded-lg bg-white space-y-3">
                  <BooleanToggle
-                  label="Add Welcome Slide"
-                  description="An introductory slide before the main form."
+                  label={t('add_welcome_slide')}
+                  description={t('introductory_slide')}
                   checked={!!formDefinition.startSlide}
                   onChange={(e) => toggleStartSlide(e.target.checked)}
                 />
                 <BooleanToggle
-                  label="Add End Slide"
-                  description="A final 'thank you' slide after submission."
+                  label={t('add_end_slide')}
+                  description={t('final_thank_you_slide')}
                   checked={!!formDefinition.endSlide}
                   onChange={(e) => toggleEndSlide(e.target.checked)}
                 />
@@ -76,8 +78,8 @@ const FormSettings = () => {
               
               <div className="p-3 border rounded-lg bg-white space-y-3">
                  <BooleanToggle
-                  label="Enable Auto-Correction (Exam Mode)"
-                  description="Enforces strict rules on inputs and adds 'answer' and 'score' fields."
+                  label={t('enable_auto_correction')}
+                  description={t('exam_mode_description')}
                   checked={!!formDefinition.settings.isAutoSolvable}
                   onChange={(e) => handleSettingChange('isAutoSolvable', e.target.checked)}
                 />
@@ -88,45 +90,45 @@ const FormSettings = () => {
 
           {activeTab === 'appearance' && (
             <div className="space-y-4 animate-fade-in">
-              <SelectInput label="Form Style" value={formDefinition.settings.formStyle || ''} onChange={(e) => handleSettingChange('formStyle', e.target.value)}><option value="">Default</option><option value="classic">Classic</option></SelectInput>
-              <SelectInput label="Font Size" value={formDefinition.settings.fontSize || ''} onChange={(e) => handleSettingChange('fontSize', e.target.value)}><option value="">Default</option><option value="sm">Small</option><option value="lg">Large</option></SelectInput>
-              <SelectInput label="Global Field Size" value={formDefinition.settings.fieldSize || ''} onChange={(e) => handleSettingChange('fieldSize', e.target.value)}><option value="">Default</option><option value="sm">Small</option></SelectInput>
-              <SelectInput label="Global Label Style" value={formDefinition.settings.labelStyle || ''} onChange={(e) => handleSettingChange('labelStyle', e.target.value)}><option value="">Default</option><option value="classic">Classic</option></SelectInput>
-              <SelectInput label="Rounding Style (rounded)" value={formDefinition.settings.rounded || ''} onChange={(e) => handleSettingChange('rounded', e.target.value)}><option value="">Default</option><option value="none">None</option><option value="pill">Pill</option></SelectInput>
-              <BooleanToggle label="Anchored Headings" checked={formDefinition.settings.headings === 'anchored'} onChange={(e) => handleSettingChange('headings', e.target.checked ? 'anchored' : undefined)} />
+              <SelectInput label={t('form_style')} value={formDefinition.settings.formStyle || ''} onChange={(e) => handleSettingChange('formStyle', e.target.value)}><option value="">{t('default')}</option><option value="classic">{t('classic')}</option></SelectInput>
+              <SelectInput label={t('font_size')} value={formDefinition.settings.fontSize || ''} onChange={(e) => handleSettingChange('fontSize', e.target.value)}><option value="">{t('default')}</option><option value="sm">{t('small')}</option><option value="lg">{t('large')}</option></SelectInput>
+              <SelectInput label={t('global_field_size')} value={formDefinition.settings.fieldSize || ''} onChange={(e) => handleSettingChange('fieldSize', e.target.value)}><option value="">{t('default')}</option><option value="sm">{t('small')}</option></SelectInput>
+              <SelectInput label={t('global_label_style')} value={formDefinition.settings.labelStyle || ''} onChange={(e) => handleSettingChange('labelStyle', e.target.value)}><option value="">{t('default')}</option><option value="classic">{t('classic')}</option></SelectInput>
+              <SelectInput label={t('rounding_style')} value={formDefinition.settings.rounded || ''} onChange={(e) => handleSettingChange('rounded', e.target.value)}><option value="">{t('default')}</option><option value="none">{t('none')}</option><option value="pill">{t('pill')}</option></SelectInput>
+              <BooleanToggle label={t('anchored_headings')} checked={formDefinition.settings.headings === 'anchored'} onChange={(e) => handleSettingChange('headings', e.target.checked ? 'anchored' : undefined)} />
             </div>
           )}
 
           {activeTab === 'behavior' && (
             <div className="space-y-4 animate-fade-in">
-               <SelectInput label="Page Layout" value={formDefinition.settings.page || 'form-slides'} onChange={(e) => handleSettingChange('page', e.target.value)}><option value="form-slides">Form Slides</option><option value="slides">Slides</option><option value="single">Single Page</option></SelectInput>
-               <SelectInput label="Page Progress Bar" value={formDefinition.settings.pageProgress || ''} onChange={(e) => handleSettingChange('pageProgress', e.target.value)}><option value="">Default (Show)</option><option value="hide">Hide</option><option value="decorative">Decorative</option></SelectInput>
-               <SelectInput label="Slide Controls (Prev/Next)" value={formDefinition.settings.slideControls || ''} onChange={(e) => handleSettingChange('slideControls', e.target.value)}><option value="">Default (Show)</option><option value="hide">Hide</option></SelectInput>
-               <BooleanToggle label="Autofocus First Field" checked={formDefinition.settings.autofocus === 'all-slides'} onChange={(e) => handleSettingChange('autofocus', e.target.checked ? 'all-slides' : undefined)} />
-               <BooleanToggle label="Show Restart Button" checked={formDefinition.settings.restartButton === 'show'} onChange={(e) => handleSettingChange('restartButton', e.target.checked ? 'show' : undefined)} />
-               <BooleanToggle label="Save State in Browser" description="Runtime option" checked={formDefinition.options.saveState !== false} onChange={(e) => handleOptionChange('saveState', e.target.checked)} />
+               <SelectInput label={t('page_layout')} value={formDefinition.settings.page || 'form-slides'} onChange={(e) => handleSettingChange('page', e.target.value)}><option value="form-slides">{t('form_slides')}</option><option value="slides">{t('slides')}</option><option value="single">{t('single_page')}</option></SelectInput>
+               <SelectInput label={t('page_progress_bar')} value={formDefinition.settings.pageProgress || ''} onChange={(e) => handleSettingChange('pageProgress', e.target.value)}><option value="">{t('default_show')}</option><option value="hide">{t('hide')}</option><option value="decorative">{t('decorative')}</option></SelectInput>
+               <SelectInput label={t('slide_controls')} value={formDefinition.settings.slideControls || ''} onChange={(e) => handleSettingChange('slideControls', e.target.value)}><option value="">{t('default_show')}</option><option value="hide">{t('hide')}</option></SelectInput>
+               <BooleanToggle label={t('autofocus_first_field')} checked={formDefinition.settings.autofocus === 'all-slides'} onChange={(e) => handleSettingChange('autofocus', e.target.checked ? 'all-slides' : undefined)} />
+               <BooleanToggle label={t('show_restart_button')} checked={formDefinition.settings.restartButton === 'show'} onChange={(e) => handleSettingChange('restartButton', e.target.checked ? 'show' : undefined)} />
+               <BooleanToggle label={t('save_state_in_browser')} description={t('runtime_option')} checked={formDefinition.options.saveState !== false} onChange={(e) => handleOptionChange('saveState', e.target.checked)} />
             </div>
           )}
 
           {activeTab === 'submission' && (
             <div className="space-y-4 animate-fade-in">
-              <TextInput label="Submission URL (postUrl)" value={formDefinition.settings.postUrl || ''} onChange={(e) => handleSettingChange('postUrl', e.target.value)} />
-              <TextInput label="Submit Button Text" value={formDefinition.settings.submitButtonText || ''} onChange={(e) => handleSettingChange('submitButtonText', e.target.value)} placeholder="Submit" />
-              <TextInput label="Google Sheet Name" value={formDefinition.settings.postSheetName || ''} onChange={(e) => handleSettingChange('postSheetName', e.target.value)} description="For Google Sheets integration." />
+              <TextInput label={t('submission_url')} value={formDefinition.settings.postUrl || ''} onChange={(e) => handleSettingChange('postUrl', e.target.value)} />
+              <TextInput label={t('submit_button_text')} value={formDefinition.settings.submitButtonText || ''} onChange={(e) => handleSettingChange('submitButtonText', e.target.value)} placeholder={t('submit')} />
+              <TextInput label={t('google_sheet_name')} value={formDefinition.settings.postSheetName || ''} onChange={(e) => handleSettingChange('postSheetName', e.target.value)} description={t('google_sheets_integration')} />
             </div>
           )}
 
            {activeTab === 'advanced' && (
             <div className="space-y-4 animate-fade-in">
-               <SelectInput label="Forms.md Branding" value={formDefinition.settings.formsmdBranding || ''} onChange={(e) => handleSettingChange('formsmdBranding', e.target.value)}>
-                <option value="">Default (Show)</option>
-                <option value="hide">Hide (Pro)</option>
+               <SelectInput label={t('formsmd_branding')} value={formDefinition.settings.formsmdBranding || ''} onChange={(e) => handleSettingChange('formsmdBranding', e.target.value)}>
+                <option value="">{t('default_show')}</option>
+                <option value="hide">{t('hide_pro')}</option>
               </SelectInput>
-               <SelectInput label="Footer" value={formDefinition.settings.footer || ''} onChange={(e) => handleSettingChange('footer', e.target.value)}>
-                <option value="">Default (Show)</option>
-                <option value="hide">Hide (Pro)</option>
+               <SelectInput label={t('footer')} value={formDefinition.settings.footer || ''} onChange={(e) => handleSettingChange('footer', e.target.value)}>
+                <option value="">{t('default_show')}</option>
+                <option value="hide">{t('hide_pro')}</option>
               </SelectInput>
-              <TextInput label="CSS Prefix" value={formDefinition.settings.cssPrefix || ''} onChange={(e) => handleSettingChange('cssPrefix', e.target.value)} placeholder="fmd-" />
+              <TextInput label={t('css_prefix')} value={formDefinition.settings.cssPrefix || ''} onChange={(e) => handleSettingChange('cssPrefix', e.target.value)} placeholder="fmd-" />
             </div>
           )}
 

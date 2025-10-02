@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { FormElement } from '../../types/form';
 import useFormStore from '../../store/formStore';
 import TextInput from './shared/TextInput';
@@ -7,6 +8,7 @@ interface TextContentPropertiesProps {
 }
 
 const TextContentProperties = ({ element }: TextContentPropertiesProps) => {
+  const { t } = useTranslation();
   const updateElement = useFormStore((state) => state.updateElement);
 
   const isHeading = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(element.type);
@@ -36,7 +38,7 @@ const TextContentProperties = ({ element }: TextContentPropertiesProps) => {
     <div className="space-y-4">
       {isHeading && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Level</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('level')}</label>
           <div className="flex flex-wrap items-center gap-2">
             <HeadingLevelButton level={1} />
             <HeadingLevelButton level={2} />
@@ -49,7 +51,7 @@ const TextContentProperties = ({ element }: TextContentPropertiesProps) => {
       )}
 
       <TextInput
-        label="Text Content"
+        label={t('text_content')}
         value={element.text || ''}
         onChange={(e) => updateElement(element.id, { text: e.target.value })}
       />
